@@ -1,12 +1,5 @@
 root = true
 
 [*.{c,h}]
-
-# Indentation and spacing
-indent_size = 4
-indent_style = space
-tab_width = 4
-
-# New line preferences
 end_of_line = lf
 insert_final_newline = false
