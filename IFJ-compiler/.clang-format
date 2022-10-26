@@ -1,0 +1,19 @@
+﻿---
+Language: Cpp
+BasedOnStyle: Microsoft
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+AllowShortIfStatementsOnASingleLine: WithoutElse
+BreakBeforeBraces: Attach
+ColumnLimit: '100'
+IndentCaseLabels: 'false'
+IndentWidth: '4'
+MaxEmptyLinesToKeep: '1'
+PenaltyBreakComment: '80'
+PenaltyBreakString: '60'
+PointerAlignment: Left
+SpacesBeforeTrailingComments: '1'
+TabWidth: '4'
+UseTab: Never
+
+...
