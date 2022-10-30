@@ -6,7 +6,7 @@ AlignEscapedNewlines: Left
 AllowShortIfStatementsOnASingleLine: WithoutElse
 BreakBeforeBraces: Attach
 ColumnLimit: '100'
-IndentCaseLabels: 'false'
+IndentCaseLabels: 'true'
 IndentWidth: '4'
 MaxEmptyLinesToKeep: '1'
 PenaltyBreakComment: '80'
