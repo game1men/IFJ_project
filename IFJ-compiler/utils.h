@@ -7,6 +7,10 @@
 
 // This file contains general helper functions used across the program
 
+extern const int EOS;
+extern const int DEFAULT_STRING_ALLOCATION;
+
+
 typedef enum {
     OK = 0,
     NULL_POINTER_EXCEPTION,
