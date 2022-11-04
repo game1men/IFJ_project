@@ -24,10 +24,10 @@ build:
   # install the necessary build tools when needed
   # before_script:
   #   - apt update && apt -y install make autoconf
-  before_script: 
+  before_script:
     # if moving to docker runners uncoment this:
     #- apt update && apt -y install make git python3
- 
+
 
   script:
     - (cd IFJ-compiler && make clean)
@@ -50,5 +50,18 @@ test:
     - git clone  https://github.com/galloj/IFJ22_Tester #clones tests
   stage: test
   script: # || echo "tests" is there for ignoring return code
-    - (cd IFJ22_Tester && ./test.py ../IFJ-compiler/compiler)  || echo "" 
+    - (cd IFJ22_Tester && ./test.py ../IFJ-compiler/compiler)  || echo ""
+
+  # run tests using the binary built before
+test2:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_PIPELINE_SOURCE == "push"
+      allow_failure: true
+  before_script:
+    - git clone  https://gitlab.com/kam29/ifj-testsuite.git #clones tests
+  stage: test
+  script: # || echo "tests" is there for ignoring return code
+    - (cd ifj-testsuite && python3 ./testsuite.py --mode-compile-only  --compiler ../IFJ-compiler/compiler)  || echo ""
     - (cd IFJ-compiler && make clean)
