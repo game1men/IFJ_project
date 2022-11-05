@@ -134,4 +134,23 @@ TokenType isKeyword(char* s);
  */
 int tokenDtor(T_token*);
 
+
+/**
+ * \brief skips chracters from stdin until searched character
+ * \return 1 if everything was succesfull or EOF if searched character was not found
+ */
+int skipUntil(char c);
+
+/**
+ * \brief detects if file contains prolog in correct format
+ * \return 1 if everything was succesfull or EOF if EOF was reached
+ */
+int skipComment();
+
+/**
+ * \brief detects if file contains prolog in correct format
+ * \return 1 if everything was succesfull or 0 if prolog in correct format was not found
+ */
+int detectProlog();
+
 #endif // !SCANNER_H

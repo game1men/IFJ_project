@@ -23,6 +23,7 @@ String* InitString(int* exception) {
 
     *exception = OK;
     return s;
+
 }
 
 int AppendChar(String* s, const char c) {
@@ -66,35 +67,35 @@ int DisposeString(String* s) {
 
 int WriteErrorMessage(COMPILATION_ERROR_TYPE ce_t) {
     switch (ce_t) {
-    case LEXICAL_ANALYSIS_ERROR:
-        fprintf(stderr, "Error in lexical analysis\n");
-        break;
-    case SYNTACTIC_ANALYSIS_ERROR:
-        fprintf(stderr, "Error in syntactic analysis\n");
-        break;
-    case SEMANTIC_ERROR_FUNCTION_UNDEFINED_OR_REDEFINED:
-        fprintf(stderr, "Semantic error: undefined or redefined function\n");
-        break;
-    case SEMANTIC_ERROR_WRONG_ARGS_OR_RETURN_VALUE:
-        fprintf(stderr, "Semantic error: wrong amount of arguments or wrong type "
-                        "of return value\n");
-        break;
-    case SEMANTIC_ERROR_USE_OF_UNDEFINED_VARIABLE:
-        fprintf(stderr, "Semantic error: use of undefined variable\n");
-        break;
-    case SEMANTIC_ERROR_WRONG_NUMBER_OF_EXPRESSIONS:
-        fprintf(stderr, "Semantic error: wrong number of expressions in return command\n");
-        break;
-    case SEMANTIC_ERROR_OF_TYPE_COMPATABILITY:
-        fprintf(stderr, "Semantic error: operation between incompatible types\n");
-        break;
-    case OTHER_SEMANTIC_ERRORS:
-        fprintf(stderr, "Semantic error: other\n");
-        break;
-        break;
-    case INTERNAL_COMPILER_ERROR:
-        fprintf(stderr, "Internal compiler error\n");
-        break;
+        case LEXICAL_ANALYSIS_ERROR:
+            fprintf(stderr, "Error in lexical analysis\n");
+            break;
+        case SYNTACTIC_ANALYSIS_ERROR:
+            fprintf(stderr, "Error in syntactic analysis\n");
+            break;
+        case SEMANTIC_ERROR_FUNCTION_UNDEFINED_OR_REDEFINED:
+            fprintf(stderr, "Semantic error: undefined or redefined function\n");
+            break;
+        case SEMANTIC_ERROR_WRONG_ARGS_OR_RETURN_VALUE:
+            fprintf(stderr, "Semantic error: wrong amount of arguments or wrong type "
+                            "of return value\n");
+            break;
+        case SEMANTIC_ERROR_USE_OF_UNDEFINED_VARIABLE:
+            fprintf(stderr, "Semantic error: use of undefined variable\n");
+            break;
+        case SEMANTIC_ERROR_WRONG_NUMBER_OF_EXPRESSIONS:
+            fprintf(stderr, "Semantic error: wrong number of expressions in return command\n");
+            break;
+        case SEMANTIC_ERROR_OF_TYPE_COMPATABILITY:
+            fprintf(stderr, "Semantic error: operation between incompatible types\n");
+            break;
+        case OTHER_SEMANTIC_ERRORS:
+            fprintf(stderr, "Semantic error: other\n");
+            break;
+            break;
+        case INTERNAL_COMPILER_ERROR:
+            fprintf(stderr, "Internal compiler error\n");
+            break;
     }
 
     return ce_t;

@@ -499,3 +499,78 @@ int tokenDtor(T_token* token) {
     token = NULL;
     return 0;
 }
+
+int skipUntil(char c) {
+    char temp;
+    while ((temp = getchar()) != c) { // skips characters until c
+        if (temp == EOF)              // if encountered error returns false
+            return EOF;
+    };
+    return 1;
+}
+
+int skipComment() {
+    char c = getchar();
+
+    if (c == '/') {                             // single line comment detection
+        if (skipUntil('\n') == EOF) return EOF; // skip to end, if encountered EOF return false
+    } else if (c == '*') {                      // block comment detection
+        do {
+            if (skipUntil('*') == EOF) return EOF; // skip until *, if encountered EOF return false
+            if ((c = getchar()) == EOF) return EOF;
+            // check if next character is slash, if not continue skipping comment
+            if (c == '/') return 1;
+
+        } while (true);
+    } else {
+        ungetc(c, stdin); // return character back because it was not part of comment
+    }
+    return 1;
+}
+
+int detectProlog() {
+    char c; // loaded character from stdin
+
+    // prolog keywords
+    char prolog[][30] = {"<?php", "declare", "(", "strict_types", "=", "1", ")", ";"};
+    int numberOfKeyWords = 7;
+    int prologLenghs[] = {5, 7, 1, 12, 1, 1, 1, 1}; // lenght of prolog keywords
+    int wordPointer = 0;                            // whitch keyword is currenlly processed
+    while (true) {
+        if ((c = getchar()) == EOF) // empty file detection
+            return 0;
+
+        if (wordPointer == 0 && c < 32) // detection of whitespace before prolog.
+            return 0;
+
+        // comment detection (comments cant be before start of prolog)
+        if (c == '/' && wordPointer > 0) {
+            if (skipComment() == EOF) return 0; // if encountered eof return false
+
+            c = EOS; // Clears slash from currently loaded character because it is still part of
+                     // comment.
+        }
+
+        if ((c > 32)) { // skips whitespace when not in middle of key word
+            int strLenght = 0;
+            char word[30] = "";
+            strncat(word, &c, 1); // adds character to string
+
+            while (strLenght != (prologLenghs[wordPointer] - 1)) { // loads whole word
+
+                if (c == EOF || c < 33) // invalid keyword
+                    return 0;
+
+                c = getchar();        // get next character
+                strncat(word, &c, 1); // adds character to string
+                strLenght++;
+            }
+            if (strcmp(prolog[wordPointer], word) != 0) // checks if prolog characters are correct
+                return 0;
+
+            wordPointer++;                      // move to next word
+            if (wordPointer > numberOfKeyWords) // all keywords mached
+                return 1;
+        }
+    }
+}
