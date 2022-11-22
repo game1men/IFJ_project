@@ -58,3 +58,9 @@ int DisposeString(String*);
 // Writes error message to stderr
 // Returns error code
 int WriteErrorMessage(COMPILATION_ERROR_TYPE);
+
+int CompareVarNames(String*, String*);
+
+int CompareChars(char, char);
+
+int min(int a, int b);
