@@ -1,11 +1,20 @@
+/*********************************************************************
+ * \file   utils.c
+ * \brief  Shared functions across program (IFJ project 2022)
+ *
+ * \author Petr Vecera (xvecer29)
+ * \author Rene Ceska (xceska06)
+ * \date   October 2022
+ *********************************************************************/
+
 #include "utils.h"
+#include "symtable.h"
 
 const int DEFAULT_STRING_ALLOCATION = 20;
 const int EOS = '\0';
 
-
 /// @brief Initializes a new instance of string struct
-/// @param exception Exception on failed allocation 
+/// @param exception Exception on failed allocation
 /// @return A new string instance
 String* InitString(int* exception) {
     String* s = (String*)malloc(sizeof(String));
@@ -72,10 +81,10 @@ int RemoveLastChar(String* s) {
 /// @param s Characters which will be appended at the end of input string. At the end must be EOS
 /// @return Exception on NULL strings or from failed reallocation
 int AppendCharacters(String* inputString, char* s) {
-    if(inputString == NULL || s == NULL) return NULL_POINTER_EXCEPTION;
+    if (inputString == NULL || s == NULL) return NULL_POINTER_EXCEPTION;
     int ex = OK;
 
-    for(int i = 0; s[i] != EOS; i++) {
+    for (int i = 0; s[i] != EOS; i++) {
         ex = AppendChar(inputString, s[i]);
         if (ex != OK) break;
     }
@@ -86,8 +95,9 @@ int AppendCharacters(String* inputString, char* s) {
 /// @brief Appends String instance at the end of another string instance
 /// @param inputString String to append another string at it's end
 /// @param appendString String which will be appended at the end of string
-/// @return 
+/// @return Exception on NULL strings or from failed reallocation
 int AppendString(String* inputString, String* appendString) {
+    if (appendString == NULL) return NULL_POINTER_EXCEPTION;
     return AppendCharacters(inputString, appendString->chars);
 }
 
@@ -139,7 +149,7 @@ int WriteErrorMessage(COMPILATION_ERROR_TYPE ce_t) {
     return ce_t;
 }
 
-/// @brief Performs comparasion between two variable names
+/// @brief Performs comparaison between two variable names
 /// @param inputVarName Incoming variable name for comparision with node's variable name
 /// @param nodeVarName Node's variable name to compare to
 /// @return One when first occurrence ASCII value of input variable character is greater than in
@@ -183,7 +193,8 @@ int CompareVarNames(String* inputVarName, String* nodeVarName) {
 /// @brief Compares ASCII value of two characters
 /// @param a first character
 /// @param b second character
-/// @return Minus one when first char has lower value than second one. Zero when are values the same. Otherwise one.
+/// @return Minus one when first char has lower value than second one. Zero when are values the
+/// same. Otherwise one.
 int CompareChars(char a, char b) {
     if (a == b) return 0;
 
@@ -196,4 +207,38 @@ int CompareChars(char a, char b) {
 
 int min(int a, int b) {
     return a < b ? a : b;
+}
+
+/// @brief Checks whether the symbol is in scope stack of symbolic trees. Function writes errors to
+/// the output and exits upon error.
+/// @param symbol Name of the symbol to be found in scope stack.
+/// @param symScopeStack Stack of symbolic tree scopes.
+/// @return True when the symbol is present in scope stack and no error occurred, otherwise false.
+bool IsInScope(String* symbol, Stack* symScopeStack) {
+    bool result = false;
+    int e = OK;
+    int* ex = &e;
+
+    if (IsEmpty(symScopeStack, ex)) return false;
+    if (e != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+
+    List sl = symScopeStack->list;
+    List* scopeList = &sl;
+    *ex = ListFirst(scopeList);
+    if (e != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+
+    while (e == OK && ListIsActive(scopeList, ex)) {
+        if (e != OK) {
+            exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+        }
+
+        T_BTnode* scope = ListGetValue(scopeList, ex);
+        result = BTsearch(scope, symbol);
+
+        if (result) break;
+
+        ListNext(scopeList);
+    }
+
+    return result;
 }
