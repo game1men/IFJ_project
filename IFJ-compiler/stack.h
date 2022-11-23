@@ -22,4 +22,4 @@ void* Top(Stack*, int*);
 
 bool IsEmtpy(Stack*, int*);
 
-int DisposeStack(Stack*);
+int DisposeStack(Stack*, void (*itemDisposer)(void*));

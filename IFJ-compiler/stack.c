@@ -85,10 +85,11 @@ bool IsEmtpy(Stack* s, int* ex) {
 
 /// @brief Disposes stack struct and the internal list
 /// @param s Input stack to work with
+/// @param itemDisposer A pointer to the function ensuring correct stack item disposal
 /// @return Exception for the null stack or exception on internal list
-int DisposeStack(Stack* s) {
+int DisposeStack(Stack* s, void (*itemDisposer)(void*)) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
-    return DisposeList(s->list);
+    return DisposeList(s->list, itemDisposer);
     s->top = NULL;
 }
