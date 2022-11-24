@@ -15,19 +15,21 @@ int InitList(List* l) {
 /// As the contents of each item are freed too. It is necessary to allocate the data on
 /// the heap, otherwise this function ends with segfault
 /// @param l Input list to work with
-/// @return exception for NULL list
-int DisposeList(List* l) {
+/// @param itemDisposer A pointer to the function ensuring correct list item disposal
+/// @return exception for NULL list or NULL item disposer
+int DisposeList(List* l, void (*itemDisposer)(void*)) {
     if (l == NULL) return NULL_POINTER_EXCEPTION;
+    if (itemDisposer == NULL) return NULL_POINTER_EXCEPTION;
 
     ListItem currentItem = l->firstItem;
-
+    int exception = OK;
     while (currentItem != NULL) {
         ListItem nextItem = currentItem->nextItem;
 
-        // frees the item contents, MUST BE ON HEAP otherwise seg fault will occur here
-        if (currentItem->data != NULL) free(currentItem->data);
+        if (currentItem->data != NULL) itemDisposer(currentItem->data);
 
         free(currentItem);
+        if (exception != OK) break;
         currentItem = nextItem;
     }
 
@@ -36,7 +38,13 @@ int DisposeList(List* l) {
     l->lastItem = NULL;
     l->count = 0;
 
-    return OK;
+    return exception;
+}
+
+/// @brief Disposes the primitives used as a list items such as int*, char* and so on
+/// @param primitive pointer to the primitive item
+void DisposePrimitive(void* primitive) {
+    free(primitive);
 }
 
 /// @brief Makes the first item in list active
@@ -157,7 +165,7 @@ void* ListGetFirst(List* l, int* ex) {
     return l->firstItem != NULL ? l->firstItem->data : NULL;
 }
 
-/// @brief Deletees the first item in the list
+/// @brief Deletes the first item in the list
 /// @param l Input list to work with
 /// @return Exception for NULL list or emtpy / not initialized list
 int ListDeleteFirst(List* l) {

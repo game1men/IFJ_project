@@ -25,7 +25,7 @@ typedef struct list_t {
 
 int InitList(List*);
 
-int DisposeList(List*);
+int DisposeList(List*, void (*itemDisposer)(void*));
 
 int ListAdd(List*, void*);
 
@@ -52,3 +52,5 @@ void* ListGetValue(List*, int*);
 int ListSetValue(List*, void*);
 
 bool ListIsActive(List*, int*);
+
+void DisposePrimitive(void*);
