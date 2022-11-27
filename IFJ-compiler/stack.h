@@ -8,7 +8,7 @@
 
 // Stack type with internal linked list
 typedef struct stack_t {
-    List* list;
+    List list;
     ListItem top;
 } Stack;
 
