@@ -5,6 +5,9 @@
 #include <string.h>
 #include <sys/types.h>
 
+#ifndef UTILS_H
+#define UTILS_H
+
 // This file contains general helper functions used across the program
 
 extern const int EOS;
@@ -64,3 +67,5 @@ int CompareVarNames(String*, String*);
 int CompareChars(char, char);
 
 int min(int a, int b);
+
+#endif

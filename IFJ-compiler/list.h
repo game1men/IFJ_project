@@ -5,6 +5,9 @@
 #include <string.h>
 #include <sys/types.h>
 
+#ifndef LIST_H
+#define LIST_H
+
 struct litem_t {
     void* data;
     struct litem_t* nextItem;
@@ -54,3 +57,5 @@ int ListSetValue(List*, void*);
 bool ListIsActive(List*, int*);
 
 void DisposePrimitive(void*);
+
+#endif
