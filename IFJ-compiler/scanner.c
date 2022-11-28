@@ -63,11 +63,13 @@ T_token* getToken() {
                 }
 
                 else if (c == '?') {
+                    AppendChar(token->val, c);
                     token->type = QUESTION_MARK;
                     return token;
                 }
 
                 else if (c == ':') {
+                    AppendChar(token->val, c);
                     token->type = COLON;
                     return token;
                 }
@@ -81,11 +83,13 @@ T_token* getToken() {
                 }
 
                 else if (c == '+') {
+                    AppendChar(token->val, c);
                     token->type = PLUS;
                     return token;
                 }
 
                 else if (c == '-') {
+                    AppendChar(token->val, c);
                     token->type = MINUS;
                     return token;
                 }
@@ -95,26 +99,31 @@ T_token* getToken() {
                 }
 
                 else if (c == '*') {
+                    AppendChar(token->val, c);
                     token->type = ASTERISK;
                     return token;
                 }
 
                 else if (c == '{') {
+                    AppendChar(token->val, c);
                     token->type = LEFT_CUR_BRACK;
                     return token;
                 }
 
                 else if (c == '(') {
+                    AppendChar(token->val, c);
                     token->type = LEFT_PAR;
                     return token;
                 }
 
                 else if (c == '}') {
+                    AppendChar(token->val, c);
                     token->type = RIGHT_CUR_BRACK;
                     return token;
                 }
 
                 else if (c == ')') {
+                    AppendChar(token->val, c);
                     token->type = RIGHT_PAR;
                     return token;
                 }
@@ -130,11 +139,13 @@ T_token* getToken() {
                 }
 
                 else if (c == ',') {
+                    AppendChar(token->val, c);
                     token->type = COMMA;
                     return token;
                 }
 
                 else if (c == ';') {
+                    AppendChar(token->val, c);
                     token->type = SEMICOLON;
                     return token;
                 }
