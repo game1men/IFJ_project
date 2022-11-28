@@ -7,7 +7,7 @@
 int InitStack(Stack* s) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
-    int ex = InitList(s->list);
+    int ex = InitList(&s->list);
     s->top = NULL;
     return ex;
 }
@@ -18,10 +18,10 @@ int InitStack(Stack* s) {
 /// @return Exception for null stack or exceptions for internal list
 int Push(Stack* s, void* data) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
-    if (s->list == NULL) return STRUCT_NOT_INITIALIZED_EXCEPTION;
+    if (&s->list == NULL) return STRUCT_NOT_INITIALIZED_EXCEPTION;
 
-    int ex = ListInsertFirst(s->list, data);
-    s->top = s->list->firstItem;
+    int ex = ListInsertFirst(&(s->list), data);
+    s->top = s->list.firstItem;
     return ex;
 }
 
@@ -35,7 +35,7 @@ void* Pop(Stack* s, int* ex) {
         return NULL;
     }
 
-    if (s->list == NULL) {
+    if (&s->list == NULL) {
         *ex = STRUCT_NOT_INITIALIZED_EXCEPTION;
         return NULL;
     }
@@ -46,8 +46,8 @@ void* Pop(Stack* s, int* ex) {
     }
 
     void* tmp = s->top->data;
-    *ex = ListDeleteFirst(s->list);
-    s->top = s->list->firstItem;
+    *ex = ListDeleteFirst(&s->list);
+    s->top = s->list.firstItem;
 
     return tmp;
 }
@@ -90,6 +90,6 @@ bool IsEmtpy(Stack* s, int* ex) {
 int DisposeStack(Stack* s, void (*itemDisposer)(void*)) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
-    return DisposeList(s->list, itemDisposer);
+    return DisposeList(&s->list, itemDisposer);
     s->top = NULL;
 }
