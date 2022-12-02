@@ -43,7 +43,14 @@ typedef enum {
     n_return,
     n_funDef,
     n_undefined,
-    n_concat
+    n_concat,
+    n_chr,
+    n_ord,
+    n_strlen,
+    n_stringval,
+    n_intval,
+    n_floatval,
+    n_substring
 } nodeType;
 
 // comparation types
@@ -53,6 +60,7 @@ typedef enum {
     lt,
     leq,
     geq,
+    neq,
     undefined
 } cmpType;
 
@@ -71,9 +79,6 @@ typedef struct T_AST {
     nodeType nodeT;
     cmpType cmpT;
     variableType varT;
-    bool isFloatOperation;
-    bool isAssigned;
-    bool isNull;
     bool isNullable;
     String* name;
     int valueInt;
