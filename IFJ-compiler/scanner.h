@@ -50,7 +50,11 @@ typedef enum {
 
     TOKEN_EOF, // 27
 
-    NOT_TOKEN // 28
+    NOT_TOKEN, // 28
+
+    DOT, // 29
+
+    EPILOG // 30
 } TokenType;
 
 /**
@@ -91,7 +95,11 @@ typedef enum {
 
     STATE_EOF,
 
-    STATE_ERROR
+    STATE_ERROR,
+
+    STATE_QUESTION_MARK,
+    STATE_BACKSLASH,
+    STATE_DOLLAR_STRING
 } States;
 
 /**

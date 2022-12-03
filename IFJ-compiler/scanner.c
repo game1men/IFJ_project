@@ -64,8 +64,7 @@ T_token* getToken() {
 
                 else if (c == '?') {
                     AppendChar(token->val, c);
-                    token->type = QUESTION_MARK;
-                    return token;
+                    state = STATE_QUESTION_MARK;
                 }
 
                 else if (c == ':') {
@@ -75,10 +74,12 @@ T_token* getToken() {
                 }
 
                 else if (c == '!') {
+                    AppendChar(token->val, c);
                     state = STATE_NEG;
                 }
 
                 else if (c == '=') {
+                    AppendChar(token->val, c);
                     state = STATE_ASSIGN;
                 }
 
@@ -95,6 +96,7 @@ T_token* getToken() {
                 }
 
                 else if (c == '/') {
+                    AppendChar(token->val, c);
                     state = STATE_SLASH;
                 }
 
@@ -134,13 +136,18 @@ T_token* getToken() {
                 }
 
                 else if (c == '"') {
-                    AppendChar(token->val, c);
                     state = STATE_STRING;
                 }
 
                 else if (c == ',') {
                     AppendChar(token->val, c);
                     token->type = COMMA;
+                    return token;
+                }
+
+                else if (c == '.') {
+                    AppendChar(token->val, c);
+                    token->type = DOT;
                     return token;
                 }
 
@@ -151,10 +158,12 @@ T_token* getToken() {
                 }
 
                 else if (c == '<') {
+                    AppendChar(token->val, c);
                     state = STATE_LESS;
                 }
 
                 else if (c == '>') {
+                    AppendChar(token->val, c);
                     state = STATE_MORE;
                 }
 
@@ -299,6 +308,7 @@ T_token* getToken() {
             // Case !=
             case STATE_NEG:
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     state = STATE_NEG_EQ;
                 } else {
                     ungetc(c, stdin);
@@ -309,6 +319,7 @@ T_token* getToken() {
             // Case !==
             case STATE_NEG_EQ:
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     token->type = NOT_EQ;
                     return token;
                 } else {
@@ -320,6 +331,7 @@ T_token* getToken() {
             // Case ==
             case STATE_ASSIGN:
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     state = STATE_EQ;
                 } else {
                     ungetc(c, stdin);
@@ -331,6 +343,7 @@ T_token* getToken() {
             // Case ===
             case STATE_EQ:
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     token->type = EQ;
                     return token;
                 } else {
@@ -426,7 +439,6 @@ T_token* getToken() {
 
             case STATE_STRING:
                 if (c == '"') {
-                    AppendChar(token->val, c);
                     token->type = STRING;
                     return token;
                 }
@@ -434,7 +446,52 @@ T_token* getToken() {
                 else if (c == EOF) {
                     ungetc(c, stdin);
                     state = STATE_ERROR;
-                } else {
+                } 
+                // Found backslash, need to check if there is escape character behind it
+                else if (c == '\\') {
+                    AppendChar(token->val, c);
+                    state = STATE_BACKSLASH;
+                }
+                // Found $ without backslash => Error
+                else if (c == '$') {
+                    AppendChar(token->val, c);
+                    state = STATE_DOLLAR_STRING;
+                } 
+                else {
+                    AppendChar(token->val, c);
+                }
+                break;
+
+            // case /
+            case STATE_BACKSLASH:
+                // Keep loading backslash
+                if (c == '\\') {
+                    AppendChar(token->val, c);
+                    state = STATE_BACKSLASH;
+                }
+                // Found $ with backslash
+                else if (c == '$') {
+                    AppendChar(token->val, c);
+                    state = STATE_STRING;
+                }
+                else {
+                    ungetc(c, stdin);
+                    state = STATE_STRING;
+                }
+                break;
+
+            // case $ without backslash but need to read the rest of the string so it wont break into another tokens
+            case STATE_DOLLAR_STRING:
+                if (c == '"') {
+                    token->type = NOT_TOKEN;
+                    return token;
+                }
+                // String has not been properly ended => error
+                else if (c == EOF) {
+                    ungetc(c, stdin);
+                    state = STATE_ERROR;
+                } 
+                else {
                     AppendChar(token->val, c);
                 }
                 break;
@@ -443,6 +500,7 @@ T_token* getToken() {
             case STATE_LESS:
                 // Case <=
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     token->type = LESS_EQ;
                     return token;
                 }
@@ -456,11 +514,25 @@ T_token* getToken() {
             case STATE_MORE:
                 // Case >=
                 if (c == '=') {
+                    AppendChar(token->val, c);
                     token->type = MORE_EQ;
                     return token;
                 }
                 ungetc(c, stdin);
                 token->type = MORE;
+                return token;
+
+                break;
+
+            // Case ?
+            case STATE_QUESTION_MARK:
+                if (c == '>') {
+                    AppendChar(token->val, c);
+                    token->type = EPILOG;
+                    return token;
+                }
+                ungetc(c, stdin);
+                token->type = QUESTION_MARK;
                 return token;
 
                 break;
