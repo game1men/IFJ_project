@@ -29,8 +29,6 @@ AST* ASTInit() {
     ast_tmp->nodeT = n_undefined;
     ast_tmp->cmpT = undefined;
     ast_tmp->varT = undefined_type;
-    ast_tmp->isFloatOperation = false;
-    ast_tmp->isNull = false;
     ast_tmp->name = NULL;
     ast_tmp->valueInt = 0;
     ast_tmp->valueString = NULL;

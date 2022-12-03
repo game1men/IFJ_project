@@ -12,7 +12,7 @@ Left - any node
 Right - n_stList/null
 
 ## concatenation (n_concat)
-As child node can be any node that returns string value.
+As child nodes can be any node that returns string value.
 
 ## operations (n_add, n_mull, n_div, n_sub, n_comp)
 
@@ -31,15 +31,12 @@ needs to have set cmpType.
 any constant in code
 
 valueInt/valueFloat/valueString - value
-vt- variable type
-isNull - if null set to true
+vt- variable type (void_type is used for null)
 
 ## variable (n_var)
 
 represents variable,
 name - var name
-isAssigned - if it is certain that it will be asigned in code set to true
-varT - last saved variable type in this variable
 
 ## assign variable (n_assignVar)
 
@@ -66,7 +63,7 @@ returns read value to stack
 
 left - condition (n_comp/var/cons)
 middle - if body (any node)
-middle - else body (any node)
+right - else body (any node)
 
 ## while (n_while)
 
@@ -82,6 +79,7 @@ middle - body (any node)
 
 Declaration and definition of function.
 
+varT  - type of return varriable
 name - name of function
 left - n_argLfun
 
@@ -100,6 +98,17 @@ list of arguments when calling function.
 name - name of function
 left - n_argLcall
 
+inbuild functions (floatval,intval,strval,strlen,substring,ord,chr) are called same way as user functions,
+only difference is that they have theyre own node type:
+floatval : n_floatval
+intval : n_intval
+strval : n_stringval
+strlen : n_strlen
+substring : n_substring
+ord : n_ord
+chr : n_chr
+
+
 ## call argument list (n_argLcall)
 
 list of arguments when calling function.
@@ -110,26 +119,29 @@ right - n_argLcall
 ## return (n_return)
 
 right - any node that returns value
+varT  - type of return varriable
 
-| node type   | left node             | middle node | right node    | cmpT | varT | isFloatOperation | isAssigned | isNull | name | valueInt | valueFloat | valueString | isNullable |
-|-------------|-----------------------|-------------|---------------|------|------|------------------|------------|--------|------|----------|------------|-------------|------------|
-| n_stList    | any                   |             | n_stList/null |      |      |                  |            |        |      |          |            |             |            |
-| n_add       | any                   |             | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_mull      | any                   |             | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_sub       | any                   |             | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_div       | any                   |             | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_concat    | any                   |             | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_comp      | any                   |             | any           | set  |      |                  |            |        |      |          |            |             |            |
-| n_constant  |                       |             |               |      | set  |                  |            | set    |      | set      | set        | set         |            |
-| n_var       |                       |             |               |      | set  |                  | set        |        | set  |          |            |             | set        |
-| n_assignVar |                       |             | any           |      |      |                  |            |        | set  |          |            |             |            |
-| n_defvar    |                       |             | any           |      |      |                  |            |        | set  |          |            |             |            |
-| n_write     | any                   |             |               |      |      |                  |            |        |      |          |            |             |            |
-| n_read      |                       |             |               |      | set  |                  |            |        |      |          |            |             |            |
-| n_if        | (n_comp/n_var/n_cons) | any         | any           |      |      |                  |            |        |      |          |            |             |            |
-| n_while     | (n_comp/n_var/n_cons) | any         |               |      |      |                  |            |        |      |          |            |             |            |
-| n_funDef    | n_argLfun             |             |               |      | set  |                  |            |        | set  |          |            |             | set        |
-| n_argLfun   |                       |             | n_argLfun     |      | set  |                  |            |        | set  |          |            |             |            |
-| n_funCall   | n_argLcall            |             |               |      | set  |                  |            |        | set  |          |            |             |            |
-| n_argLcall  | any                   |             | n_argLcall    |      |      |                  |            |        |      |          |            |             |            |
-| n_return    |                       |             | any           |      | set  |                  |            |        |      |          |            |             | set        |
+
+
+| node type   | left node             | middle node | right node    | cmpT | varT | name | valueInt | valueFloat | valueString | isNullable |
+|-------------|-----------------------|-------------|---------------|------|------|------|----------|------------|-------------|------------|
+| n_stList    | any                   |             | n_stList/null |      |      |      |          |            |             |            |
+| n_mull      | any                   |             | any           |      |      |      |          |            |             |            |
+| n_add       | any                   |             | any           |      |      |      |          |            |             |            |
+| n_sub       | any                   |             | any           |      |      |      |          |            |             |            |
+| n_div       | any                   |             | any           |      |      |      |          |            |             |            |
+| n_concat    | any                   |             | any           |      |      |      |          |            |             |            |
+| n_comp      | any                   |             | any           | set  |      |      |          |            |             |            |
+| n_constant  |                       |             |               |      | set  |      | set      | set        | set         |            |
+| n_var       |                       |             |               |      |      | set  |          |            |             |            |
+| n_assignVar |                       |             | any           |      |      | set  |          |            |             |            |
+| n_defvar    |                       |             | any           |      |      | set  |          |            |             |            |
+| n_write     | any                   |             |               |      |      |      |          |            |             |            |
+| n_read      |                       |             |               |      | set  |      |          |            |             |            |
+| n_if        | (n_comp/n_var/n_cons) | any         | any           |      |      |      |          |            |             |            |
+| n_while     | (n_comp/n_var/n_cons) | any         |               |      |      |      |          |            |             |            |
+| n_funDef    | n_argLfun             |             |               |      | set  | set  |          |            |             |            |
+| n_argLfun   |                       |             | n_argLfun     |      | set  | set  |          |            |             | set        |
+| n_funCall   | n_argLcall            |             |               |      |      | set  |          |            |             |            |
+| n_argLcall  | any                   |             | n_argLcall    |      |      |      |          |            |             |            |
+| n_return    |                       |             | any           |      | set  |      |          |            |             | set        |
