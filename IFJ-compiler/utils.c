@@ -3,6 +3,10 @@
 const int DEFAULT_STRING_ALLOCATION = 20;
 const int EOS = '\0';
 
+
+/// @brief Initializes a new instance of string struct
+/// @param exception Exception on failed allocation 
+/// @return A new string instance
 String* InitString(int* exception) {
     String* s = (String*)malloc(sizeof(String));
     if (s == NULL) {
@@ -25,6 +29,10 @@ String* InitString(int* exception) {
     return s;
 }
 
+/// @brief Appends character at the end of string
+/// @param s input String struct
+/// @param c Character which will be appended at the end of String
+/// @return Exception on failed reallocation
 int AppendChar(String* s, const char c) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
@@ -35,6 +43,7 @@ int AppendChar(String* s, const char c) {
         if (ptr == NULL) return INVALID_ALLOCATION_EXCEPTION;
 
         s->chars = ptr;
+        s->allocated *= 2;
     }
 
     s->chars[s->length] = c;
@@ -44,6 +53,9 @@ int AppendChar(String* s, const char c) {
     return OK;
 }
 
+/// @brief Removes last character from the string
+/// @param s Input string
+/// @return Exception on empty string or NULL string
 int RemoveLastChar(String* s) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
@@ -55,6 +67,33 @@ int RemoveLastChar(String* s) {
     return OK;
 }
 
+/// @brief Appends string at the end of input string
+/// @param inputString Input string to append new string to
+/// @param s Characters which will be appended at the end of input string. At the end must be EOS
+/// @return Exception on NULL strings or from failed reallocation
+int AppendCharacters(String* inputString, char* s) {
+    if(inputString == NULL || s == NULL) return NULL_POINTER_EXCEPTION;
+    int ex = OK;
+
+    for(int i = 0; s[i] != EOS; i++) {
+        ex = AppendChar(inputString, s[i]);
+        if (ex != OK) break;
+    }
+
+    return ex;
+}
+
+/// @brief Appends String instance at the end of another string instance
+/// @param inputString String to append another string at it's end
+/// @param appendString String which will be appended at the end of string
+/// @return 
+int AppendString(String* inputString, String* appendString) {
+    return AppendCharacters(inputString, appendString->chars);
+}
+
+/// @brief Frees resources of string struct
+/// @param s Input string
+/// @return Exception on NULL pointer
 int DisposeString(String* s) {
     if (s == NULL) return NULL_POINTER_EXCEPTION;
 
