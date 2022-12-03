@@ -42,20 +42,16 @@ typedef struct {
     char* chars;
 } String;
 
-// Initializes a new instance of string struct
-// Upon failed allocation it will return NULL and exception will be set
 String* InitString(int*);
 
-// Appends a character to the end of the string
-// Upon failed allocation it will return an error
 int AppendChar(String*, const char);
 
-// Removes last character from the string
-// If the string is emtpy it will return an error
 int RemoveLastChar(String*);
 
-// Frees the string struct and it's contents
-// Null pointer returns exception
+int AppendCharacters(String*, char*);
+
+int AppendString(String*, String*);
+
 int DisposeString(String*);
 
 // Writes error message to stderr
