@@ -162,7 +162,8 @@ void* ListGetFirst(List* l, int* ex) {
         return NULL;
     }
 
-    if(l->firstItem == NULL) *ex = STRUCT_NOT_INITIALIZED_EXCEPTION;
+    if (l->firstItem == NULL) *ex = STRUCT_NOT_INITIALIZED_EXCEPTION;
+
     *ex = OK;
     return l->firstItem != NULL ? l->firstItem->data : NULL;
 }
