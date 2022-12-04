@@ -22,7 +22,7 @@ void* Pop(Stack*, int*);
 
 void* Top(Stack*, int*);
 
-bool IsEmtpy(Stack*, int*);
+bool IsEmpty(Stack*, int*);
 
 int DisposeStack(Stack*, void (*itemDisposer)(void*));
 
