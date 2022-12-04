@@ -53,8 +53,18 @@ int BTinsert(T_BTnode** tree, String* key, void* data);
  * 
  * \return Data of node if found or NULL
  */
-void* BTsearch(T_BTnode* tree, String* key, int* err);
+void* BTgetData(T_BTnode* tree, String* key, int* err);
 
+/**
+* \brief Searches the tree for specific node
+* 
+*  \param tree Pointer to the root of the tree
+ * \param key Key of node we are looking for
+ * \param err Boolean value for error (true if error occurs)
+ * 
+ * \return true if node was found, false otherwise
+*/
+bool BTsearch(T_BTnode* tree, String* key);
 /**
  * \brief Deletes specific node in tree
  * 

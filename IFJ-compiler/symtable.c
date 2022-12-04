@@ -87,7 +87,7 @@ int BTinsert(T_BTnode** tree, String* key, void* data) {
     return OK;
 }
 
-void* BTsearch(T_BTnode* tree, String* key, int* err) {
+void* BTgetData(T_BTnode* tree, String* key, int* err) {
     while (tree != NULL) {
 
         if (CompareVarNames(tree->key, key) == -1) {
@@ -98,7 +98,8 @@ void* BTsearch(T_BTnode* tree, String* key, int* err) {
                 return NULL;
             }
             tree = tree->leftPtr;
-        } else if (CompareVarNames(tree->key, key) == 1) {
+        }
+        else if (CompareVarNames(tree->key, key) == 1) {
 
             // we go to the right (if we can, otherwise return NULL)
             if (tree->rightPtr == NULL) {
@@ -116,6 +117,32 @@ void* BTsearch(T_BTnode* tree, String* key, int* err) {
     // tree is NULL
     *err = NULL_POINTER_EXCEPTION;
     return NULL;
+}
+
+bool BTsearch(T_BTnode* tree, String* key) {
+    while (tree != NULL) {
+
+        if (CompareVarNames(tree->key, key) == -1) {
+
+            // we go to the left (if we can, otherwise return NULL)
+            if (tree->leftPtr == NULL) {
+                return false;
+            }
+            tree = tree->leftPtr;
+        }
+        else if (CompareVarNames(tree->key, key) == 1) {
+
+            // we go to the right (if we can, otherwise return NULL)
+            if (tree->rightPtr == NULL) {
+                return false;
+            }
+            tree = tree->rightPtr;
+        }
+        // found the element
+        else return true;
+    }
+    // tree is NULL
+    return false;
 }
 
 int BTdelete(T_BTnode* tree, String* key) {
