@@ -223,7 +223,7 @@ int BTdispose(T_BTnode* tree, void (*ItemDisposer)(void *)) {
 
     if (err != OK) return err;
 
-    while (!IsEmtpy(&stack, &err)) {
+    while (!IsEmpty(&stack, &err)) {
 
         if (err != OK) return err;
 

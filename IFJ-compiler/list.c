@@ -153,7 +153,7 @@ int ListDelete(List* l, void* data) {
 
 /// @brief Gets the first item data in list
 /// @param l Input list to work with
-/// @param ex Exception for NULL list or emtpy / not initialized list
+/// @param ex Exception for NULL list or empty / not initialized list
 /// @return data from the first item or NULL for exception
 void* ListGetFirst(List* l, int* ex) {
     // Exception handling
@@ -161,13 +161,16 @@ void* ListGetFirst(List* l, int* ex) {
         *ex = NULL_POINTER_EXCEPTION;
         return NULL;
     }
+
+    if (l->firstItem == NULL) *ex = STRUCT_NOT_INITIALIZED_EXCEPTION;
+
     *ex = OK;
     return l->firstItem != NULL ? l->firstItem->data : NULL;
 }
 
 /// @brief Deletes the first item in the list
 /// @param l Input list to work with
-/// @return Exception for NULL list or emtpy / not initialized list
+/// @return Exception for NULL list or empty / not initialized list
 int ListDeleteFirst(List* l) {
     if (l == NULL) return NULL_POINTER_EXCEPTION;
 

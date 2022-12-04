@@ -40,7 +40,7 @@ void* Pop(Stack* s, int* ex) {
         return NULL;
     }
 
-    if (IsEmtpy(s, ex)) {
+    if (IsEmpty(s, ex)) {
         *ex = STRUCT_EMPTY_EXCEPTION;
         return NULL;
     }
@@ -62,7 +62,7 @@ void* Top(Stack* s, int* ex) {
         return NULL;
     }
 
-    if (IsEmtpy(s, ex)) {
+    if (IsEmpty(s, ex)) {
         *ex = STRUCT_EMPTY_EXCEPTION;
         return NULL;
     }
@@ -74,7 +74,7 @@ void* Top(Stack* s, int* ex) {
 /// @param s Input stack to work with
 /// @param ex Exception for NULL stack
 /// @return True if the stack is empty or stack is NULL, otherwise false
-bool IsEmtpy(Stack* s, int* ex) {
+bool IsEmpty(Stack* s, int* ex) {
     if (s == NULL) {
         *ex = NULL_POINTER_EXCEPTION;
         return true;
