@@ -232,8 +232,8 @@ bool IsInScope(String* symbol, Stack* symScopeStack) {
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
-        T_BTnode* scope = ListGetValue(scopeList, ex);
-        result = BTsearch(scope, symbol);
+        T_BTnode** scope = ListGetValue(scopeList, ex);
+        result = BTsearch(*scope, symbol);
 
         if (result) break;
 
