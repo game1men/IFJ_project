@@ -83,7 +83,7 @@ typedef struct T_AST {
     String* name;
     int valueInt;
     String* valueString;
-    float valueFloat;
+    double valueFloat;
     int id; // unique id for each node
 } AST;
 
