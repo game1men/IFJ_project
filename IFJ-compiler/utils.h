@@ -1,9 +1,19 @@
+/*********************************************************************
+ * \file   utils.h
+ * \brief  Shared functions across program (IFJ project 2022)
+ *
+ * \author Petr Vecera (xvecer29)
+ * \author Rene Ceska (xceska06)
+ * \date   October 2022
+ *********************************************************************/
+
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include "stack.h"
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -63,5 +73,7 @@ int CompareVarNames(String*, String*);
 int CompareChars(char, char);
 
 int min(int a, int b);
+
+bool IsInScope(String*, Stack*);
 
 #endif
