@@ -96,7 +96,6 @@ T_token* getToken() {
                 }
 
                 else if (c == '/') {
-                    AppendChar(token->val, c);
                     state = STATE_SLASH;
                 }
 
@@ -364,6 +363,7 @@ T_token* getToken() {
                 // Returning division token type
                 else {
                     ungetc(c, stdin);
+                    AppendChar(token->val, '/');
                     token->type = DIV;
                     return token;
                 }
