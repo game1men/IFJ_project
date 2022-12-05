@@ -2,7 +2,7 @@
 
 In short node reads from left and writes to right.
 
-id - will be set as unique whe inicialized
+id - will be set as unique when inicialized
 
 ## statement list (n_stList)
 
@@ -50,10 +50,6 @@ defines variable and assigns value from right child to it. (in functions needs t
 name - var name
 right - any node that returns value
 
-## write (n_write)
-
-prints left child to stdin.
-left - any node that returns value
 
 ## read (n_read)
 varT - what kind of variable to load
@@ -108,6 +104,11 @@ substring : n_substring
 ord : n_ord
 chr : n_chr
 
+## write (n_write)
+
+same as any other inbuilt function
+left - n_argLcall
+
 
 ## call argument list (n_argLcall)
 
@@ -119,7 +120,7 @@ right - n_argLcall
 ## return (n_return)
 
 right - any node that returns value
-varT  - type of return varriable
+varT  - type of return varriable of function
 
 
 
@@ -137,7 +138,7 @@ varT  - type of return varriable
 | n_assignVar |                       |             | any           |      |      | set  |          |            |             |            |
 | n_defvar    |                       |             | any           |      |      | set  |          |            |             |            |
 | n_write     | any                   |             |               |      |      |      |          |            |             |            |
-| n_read      |                       |             |               |      | set  |      |          |            |             |            |
+| n_read      | n_argLcall            |             |               |      |      |      |          |            |             |            |
 | n_if        | (n_comp/n_var/n_cons) | any         | any           |      |      |      |          |            |             |            |
 | n_while     | (n_comp/n_var/n_cons) | any         |               |      |      |      |          |            |             |            |
 | n_funDef    | n_argLfun             |             |               |      | set  | set  |          |            |             |            |
