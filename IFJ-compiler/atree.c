@@ -84,7 +84,7 @@ void _ConvertToAstNode(AST* tree, PostFixItem* item, Stack* varScope) {
         case FLOAT_EXP:
             tree->nodeT = n_constant;
             tree->varT = float_type;
-            tree->valueFloat = strtof(token->val->chars, NULL);
+            tree->valueFloat = strtod(token->val->chars, NULL);
             break;
         case VAR: {
             tree->nodeT = n_var;
@@ -163,8 +163,7 @@ List* _ConvertToPostfix(List* tokenList, T_token** lastToken) {
     }
 
     // Get first token
-    T_token* currentToken = _GetNextToken(tokenList, &exception);
-    if (exception != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    T_token* currentToken = _GetNextToken(tokenList);
 
     *lastToken = currentToken;
 
@@ -235,16 +234,13 @@ List* _ConvertToPostfix(List* tokenList, T_token** lastToken) {
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
-        currentPfItem = _CreatePFItem(_GetNextToken(tokenList, &exception));
-        if (currentPfItem == NULL) {
-            exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
-        }
+        currentPfItem = _CreatePFItem(_GetNextToken(tokenList));
 
         *lastToken = currentPfItem->token;
     } // end of while
 
-    // Expression is not complete
-    if (shouldBeNumber && currentPfItem->pftype == PF_INVALID) {
+    // Expression is not complete, but allows empty expressions
+    if (shouldBeNumber && currentPfItem->pftype == PF_INVALID && resultList->count != 0) {
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
 
@@ -306,20 +302,19 @@ int _EmptyTo(int desiredPrecedence, bool toSamePrecedenceInclusive, Stack* stack
 
 /// @brief Gets the next token either from buffer or program input
 /// @param buffer Token buffer
-/// @param ex Exception flag
-/// @return Returns token or NULL on exception
-T_token* _GetNextToken(List* buffer, int* ex) {
-    T_token* bufferToken = (T_token*)ListGetFirst(buffer, ex);
+/// @return Token from buffer or input
+T_token* _GetNextToken(List* buffer) {
+    int ex = OK;
+    T_token* bufferToken = (T_token*)ListGetFirst(buffer, &ex);
 
-    if (*ex != OK) return NULL;
+    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 
-    if (bufferToken != NULL) {
-        *ex = ListDeleteFirst(buffer);
-        if (ex != OK) return NULL;
-        return bufferToken;
-    } else {
-        return getToken();
-    }
+    // buffer is empty, getting from input
+    if (bufferToken == NULL) return getToken();
+
+    ex = ListDeleteFirst(buffer);
+    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    return bufferToken;
 }
 
 /// @brief Creates post fix item from input token

@@ -44,7 +44,7 @@ void _ConvertToAstNode(AST*, PostFixItem*, Stack*);
 
 int _EmptyTo(int, bool, Stack*, List*);
 
-T_token* _GetNextToken(List*, int*);
+T_token* _GetNextToken(List*);
 
 PostFixItem* _CreatePFItem(T_token*);
 
