@@ -7,6 +7,11 @@
  * \date   October 2022
  *********************************************************************/
 
+
+
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -14,9 +19,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include "stack.h"
-
-#ifndef UTILS_H
-#define UTILS_H
 
 // This file contains general helper functions used across the program
 
