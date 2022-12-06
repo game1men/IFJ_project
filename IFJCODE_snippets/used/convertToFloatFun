@@ -1,0 +1,111 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+#converts from int/float/nil to float. anything else is err7
+##start------------------------------------------------over%%%convertToFloat
+jump over%%%convertToFloat
+label %%%convertToFloat
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToFloat  LF@%%%var1type string@int
+    jumpifeq float%%%convertToFloat LF@%%%var1type string@float
+    jumpifeq nil%%%convertToFloat  LF@%%%var1type string@nil
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToFloat
+        pushs LF@%%%var1
+        INT2FLOATs #convert to float
+
+    jump ret%%%convertToFloat
+
+    label float%%%convertToFloat
+        pushs LF@%%%var1
+        #just return alredy right type
+    jump ret%%%convertToFloat
+
+    label nil%%%convertToFloat # nill is converted to zero
+        pushs float@0x0p+0
+        jump ret%%%convertToFloat
+    label ret%%%convertToFloat
+
+
+popframe
+return
+label over%%%convertToFloat
+##end------------------------------------------------over%%%convertToFloat
+##testts
+    defvar LF@%%%var1
+    defvar LF@%%%var1type
+
+
+pushs int@6
+call  %%%convertToFloat
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+
+pushs float@0x1.2666666666666p+0
+call  %%%convertToFloat
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs nil@nil
+call  %%%convertToFloat
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs string@test
+call  %%%convertToFloat
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+popframe

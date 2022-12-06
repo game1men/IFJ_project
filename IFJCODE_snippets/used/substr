@@ -1,0 +1,160 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+
+
+
+
+
+######substr
+# string
+# from
+# to
+##start------------------------------------------------over%%%substr
+jump over%%%substr
+label %%%substr
+createframe
+pushframe
+    defvar LF@%%%to
+    defvar LF@%%%from
+    defvar LF@%%%string
+
+
+    pops LF@%%%to
+    pops LF@%%%from
+    pops LF@%%%string
+
+
+    defvar LF@%%%strLen
+    STRLEN LF@%%%strLen LF@%%%string
+
+    #conditions
+    defvar LF@%%condition
+    defvar LF@%%condition2
+    LT LF@%%condition LF@%%%to int@0
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%from int@0
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%to LF@%%%from
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%to LF@%%%from
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    GT LF@%%condition LF@%%%to LF@%%%strLen
+    EQ LF@%%condition2 LF@%%%to LF@%%%strLen
+    OR LF@%%condition LF@%%condition LF@%%condition2
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    GT LF@%%condition LF@%%%from LF@%%%strLen
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+
+    defvar LF@%%%tmpChar
+    defvar LF@%%%iter
+      defvar LF@%%%tmpString
+      move LF@%%%tmpString string@
+    move LF@%%%iter int@0
+    label lop%%%substr
+    JUMPIFEQ endLoop%%%substr LF@%%%from LF@%%%to
+
+    getchar  LF@%%%tmpChar LF@%%%string LF@%%%from
+    concat LF@%%%tmpString LF@%%%tmpString LF@%%%tmpChar
+
+    add LF@%%%iter  LF@%%%iter int@1
+    add LF@%%%from  LF@%%%from int@1
+
+    jump lop%%%substr
+
+    label endLoop%%%substr
+        pushs LF@%%%tmpString
+    jump ret%%%substr
+
+label retNull%%%substr
+pushs nil@nil
+
+label ret%%%substr
+popframe
+return
+label over%%%substr
+##end------------------------------------------------over%%%substr
+##testts
+defvar LF@test
+
+
+pushs string@testABCtest
+pushs int@4
+pushs int@8
+call %%%substr
+
+
+pops LF@test
+write LF@test
+pushs string@testABCtest
+pushs int@100
+pushs int@8
+call %%%substr
+
+pops LF@test
+write LF@test
+pushs string@testABCtest
+pushs int@4
+pushs int@100
+call %%%substr
+
+pops LF@test
+write LF@test
+pushs string@testABCtest
+pushs int@8
+pushs int@4
+call %%%substr
+pops LF@test
+write LF@test
+
+pushs string@testABCtest
+pushs int@-1
+pushs int@-2
+call %%%substr
+pops LF@test
+write LF@test
+pushs string@
+pushs int@0
+pushs int@0
+call %%%substr
+pops LF@test
+write LF@test
+#pushs string@test
+#pushs int@0
+#call %%%substr
+
+
+
+
+popframe

@@ -1,0 +1,16 @@
+.IFJcode22
+
+createframe
+pushframe
+
+defvar LF@test
+
+pushs int@10
+pushs float@0x1.4p+2
+
+
+muls
+
+pops LF@test
+
+write LF@test

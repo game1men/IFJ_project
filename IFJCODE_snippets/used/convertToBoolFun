@@ -1,0 +1,126 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+#converts from int/float/nil/bool/string to bool. anything else is err7
+##start------------------------------------------------over%%%convertToBool
+jump over%%%convertToBool
+label %%%convertToBool
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToBool  LF@%%%var1type string@int
+    jumpifeq float%%%convertToBool LF@%%%var1type string@float
+    jumpifeq nil%%%convertToBool  LF@%%%var1type string@nil
+    jumpifeq string%%%convertToBool  LF@%%%var1type string@string
+    jumpifeq bool%%%convertToBool  LF@%%%var1type string@bool
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToBool
+        jumpifeq false%%%convertToBool LF@%%%var1 int@0
+        pushs bool@true
+
+    jump ret%%%convertToBool
+
+    label float%%%convertToBool
+        jumpifeq false%%%convertToBool LF@%%%var1  float@0x0p+0
+        pushs bool@true
+
+    jump ret%%%convertToBool
+
+    label nil%%%convertToBool
+
+    jump false%%%convertToBool
+
+    label string%%%convertToBool
+     jumpifeq false%%%convertToBool LF@%%%var1 string@
+  pushs bool@true
+    jump ret%%%convertToBool
+
+    label bool%%%convertToBool
+        pushs LF@%%%var1
+        jump ret%%%convertToBool
+
+    label false%%%convertToBool
+    pushs bool@false
+    label ret%%%convertToBool
+
+
+popframe
+return
+label over%%%convertToBool
+##end------------------------------------------------over%%%convertToBool
+##testts
+    defvar LF@%%%var1
+    defvar LF@%%%var1type
+
+
+pushs int@6
+call  %%%convertToBool
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+
+pushs float@0x1.2666666666666p+0
+call  %%%convertToBool
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs nil@nil
+call  %%%convertToBool
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs string@test
+call  %%%convertToBool
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+popframe
