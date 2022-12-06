@@ -161,4 +161,6 @@ int skipComment();
  */
 int detectProlog();
 
+T_token* GetNextBufferToken(List*);
+
 #endif // !SCANNER_H

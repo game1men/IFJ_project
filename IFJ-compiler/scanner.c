@@ -657,3 +657,20 @@ int detectProlog() {
         }
     }
 }
+
+/// @brief Gets the next token either from buffer or program input
+/// @param buffer Token buffer
+/// @return Token from buffer or input
+T_token* GetNextBufferToken(List* buffer) {
+    int ex = OK;
+    T_token* bufferToken = (T_token*)ListGetFirst(buffer, &ex);
+
+    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+
+    // buffer is empty, getting from input
+    if (bufferToken == NULL) return getToken();
+
+    ex = ListDeleteFirst(buffer);
+    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    return bufferToken;
+}
