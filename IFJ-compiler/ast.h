@@ -8,6 +8,9 @@
 
 #include "utils.h"
 
+#ifndef AST_H
+#define AST_H
+
 // types of nodes
 typedef enum {
     n_if,       // left is expression that has to return true/false
@@ -88,4 +91,6 @@ typedef struct T_AST {
 } AST;
 
 AST* ASTInit();
-int ASTDtor(AST* ast_tmp);
+int ASTDtor(AST*, bool);
+
+#endif
