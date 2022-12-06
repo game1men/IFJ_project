@@ -1,0 +1,85 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+
+
+
+
+
+######checks if it is right type, else it trows err
+# var
+# type
+# int 0 - 7 (err)
+##start------------------------------------------------over%%%typeCheck
+jump over%%%typeCheck
+label %%%typeCheck
+createframe
+pushframe
+    defvar LF@%%%var
+    defvar LF@%%%varTypeCheck
+    defvar LF@%%%err
+    pops LF@%%%err
+    pops LF@%%%varTypeCheck
+    pops LF@%%%var
+
+        defvar LF@%%%varType
+        type LF@%%%varType LF@%%%var
+
+
+        JUMPIFEQ   ret%%%typeCheck  LF@%%%varType   LF@%%%varTypeCheck
+
+        jumpifeq %%%err1  LF@%%%err int@1
+        jumpifeq %%%err2  LF@%%%err int@2
+        jumpifeq %%%err3  LF@%%%err int@3
+        jumpifeq %%%err4  LF@%%%err int@4
+        jumpifeq %%%err5  LF@%%%err int@5
+        jumpifeq %%%err6  LF@%%%err int@6
+        jumpifeq %%%err7  LF@%%%err int@7
+
+label ret%%%typeCheck
+pushs LF@%%%var
+popframe
+return
+label over%%%typeCheck
+##end------------------------------------------------over%%%typeCheck
+##testts
+
+
+pushs int@5
+pushs string@string
+pushs int@3
+call %%%typeCheck
+
+
+popframe

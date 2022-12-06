@@ -1,0 +1,112 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+#converts from int/float/nil to float. anything else is err7
+##start------------------------------------------------over%%%convertToInt
+jump over%%%convertToInt
+label %%%convertToInt
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToInt  LF@%%%var1type string@int
+    jumpifeq float%%%convertToInt LF@%%%var1type string@float
+    jumpifeq nil%%%convertToInt  LF@%%%var1type string@nil
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToInt
+        pushs LF@%%%var1
+         #just return alredy right type
+
+
+    jump ret%%%convertToInt
+
+    label float%%%convertToInt
+        pushs LF@%%%var1
+        FLOAT2INTs #convert to int
+    jump ret%%%convertToInt
+
+    label nil%%%convertToInt # nill is converted to zero
+        pushs int@0
+        jump ret%%%convertToInt
+    label ret%%%convertToInt
+
+
+popframe
+return
+label over%%%convertToInt
+##end------------------------------------------------over%%%convertToInt
+##testts
+    defvar LF@%%%var1
+    defvar LF@%%%var1type
+
+
+pushs int@6
+call  %%%convertToInt
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+
+pushs float@0x1.2666666666666p+0
+call  %%%convertToInt
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs nil@nil
+call  %%%convertToInt
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+pushs string@test
+call  %%%convertToInt
+
+    pops LF@%%%var1
+    type LF@%%%var1type LF@%%%var1
+    write LF@%%%var1type
+
+popframe

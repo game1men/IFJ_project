@@ -1,0 +1,24 @@
+.IFJcode22
+DEFVAR GF@tmpPrint
+DEFVAR GF@tmpRead
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@test
+PUSHS int@53
+POPS LF@test
+
+LABEL start%%2
+
+
+PUSHS LF@test
+PUSHS int@100
+
+LTS
+PUSHs bool@true
+JUMPIFNEQS ower%2
+PUSHS LF@test
+POPS GF@tmpPrint
+WRITE GF@tmpPrint
+JUMP start%%2
+LABEL ower%2
+POPFRAME

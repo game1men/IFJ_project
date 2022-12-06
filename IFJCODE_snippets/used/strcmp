@@ -1,0 +1,171 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+#converts nil/string to string
+##start------------------------------------------------over%%%convertToString
+jump over%%%convertToString
+label %%%convertToString
+createframe
+pushframe
+    defvar LF@%%%var
+    pops LF@%%%var
+    defvar LF@%%%varType
+
+    #get type
+    type LF@%%%varType LF@%%%var
+
+    #jump where is type
+    jumpifeq nil%%%convertToString  LF@%%%varType  string@nil
+    jumpifeq string%%%convertToString LF@%%%varType  string@string
+
+    #if neither its err7
+    jump  %%%err7
+
+    label string%%%convertToString
+        pushs LF@%%%var
+         #just return alredy right type
+
+    jump ret%%%convertToString
+
+    label nil%%%convertToString
+        pushs string@ #push empty string
+    jump ret%%%convertToString
+
+    label ret%%%convertToString
+popframe
+return
+label over%%%convertToString
+##end------------------------------------------------over%%%convertToString
+##testts
+
+
+#compares strings/nils
+#var1 string/nil
+#var2 string/nil
+#va3 string containing (LT,GT,EQ, LEQ, GEQ)
+##start------------------------------------------------over%%%strcmp
+jump over%%%strcmp
+label %%%strcmp
+createframe
+pushframe
+    defvar LF@%%%var2
+    pops LF@%%%var2
+    defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%comp
+    pops LF@%%%comp
+
+
+
+
+
+    #convert both varriables to strings
+    pushs LF@%%%var1
+    call %%%convertToString
+    pops LF@%%%var1
+
+
+
+    pushs LF@%%%var2
+    call %%%convertToString
+    pops LF@%%%var2
+
+
+
+    JUMPIFEQ LT%%%strcmp    LF@%%%comp  string@LT
+    JUMPIFEQ GT%%%strcmp    LF@%%%comp  string@GT
+    JUMPIFEQ EQ%%%strcmp    LF@%%%comp  string@EQ
+    JUMPIFEQ LEQ%%%strcmp   LF@%%%comp  string@LEQ
+    JUMPIFEQ GEQ%%%strcmp   LF@%%%comp  string@GEQ
+
+    label LT%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         LTS
+    jump ret%%%strcmp
+
+    label GT%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         GTS
+    jump ret%%%strcmp
+
+    label EQ%%%strcmp
+        pushs LF@%%%var1
+        pushs LF@%%%var2
+        EQS
+    jump ret%%%strcmp
+
+    label LEQ%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         LTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%strcmp
+
+    label GEQ%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         GTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%strcmp
+
+
+
+
+label ret%%%strcmp
+popframe
+return
+label over%%%strcmp
+##end------------------------------------------------over%%%strcmp
+##testts
+
+defvar LF@%%%var1
+pushs string@LQ
+
+pushs string@abc
+pushs nil@nil
+call  %%%strcmp
+
+    pops LF@%%%var1
+    write LF@%%%var1
+
+
+popframe

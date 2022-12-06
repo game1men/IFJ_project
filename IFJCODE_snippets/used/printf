@@ -1,0 +1,91 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+
+
+
+
+
+######prints to stdout
+# arg0
+# ...
+# argn
+#int argument count (without this argument)
+##start------------------------------------------------over%%%printf
+jump over%%%printf
+label %%%printf
+createframe
+pushframe
+    defvar LF@%%%argcount
+    pops LF@%%%argcount
+      defvar LF@%%%iter
+      move LF@%%%iter int@0
+
+        JUMPIFEQ   ret%%%printf int@0  LF@%%%argcount
+
+        defvar LF@%%%write
+        pops   LF@%%%write
+        sub  LF@%%%argcount  LF@%%%argcount  int@1
+        pushs LF@%%%argcount
+        call %%%printf
+        write  LF@%%%write
+
+
+label ret%%%printf
+popframe
+return
+label over%%%printf
+##end------------------------------------------------over%%%printf
+##testts
+
+
+pushs string@test
+pushs string@\012
+pushs int@20
+pushs string@\012
+pushs float@0x1.2666666666666p+0
+pushs string@\012
+pushs bool@true
+pushs string@\012
+pushs nil@nil
+pushs int@9
+call %%%printf
+#pushs string@test
+#pushs int@0
+#call %%%printf
+
+
+
+
+popframe

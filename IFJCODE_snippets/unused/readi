@@ -1,0 +1,19 @@
+.IFJcode22
+
+
+defvar GF@writei
+defvar GF@writes
+defvar GF@writef
+createframe
+pushframe
+
+    LABEL start%%%read
+    generate(tree->left, frame);
+
+    PUSHs bool@true
+    JUMPIFNEQS ower%%%read
+    generate(tree->middle, frame);
+    JUMP start%%%read
+    LABEL ower%%%read
+
+popframe

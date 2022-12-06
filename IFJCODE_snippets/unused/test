@@ -1,0 +1,12 @@
+.IFJcode22
+createframe
+pushframe
+
+
+defvar LF@test
+
+pushs nil@nil
+pops LF@test
+move LF@test float@0x1.4p+2
+
+

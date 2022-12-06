@@ -1,0 +1,106 @@
+.IFJcode22
+
+
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+jump over%%%convert
+label %%%convert
+defvar LF@%%%var1
+  pops LF@%%%var1
+  defvar LF@%%%var2
+  pops LF@%%%var2
+
+  defvar LF@%%%var1type
+  defvar LF@%%%var2type
+
+type LF@%%%var1type LF@%%%var1
+type LF@%%%var2type LF@%%%var2
+
+pushs LF@%%%var1type
+pushs LF@%%%var2type
+eqs
+pushs bool@true
+JUMPIFEQS %%%eq
+
+pushs LF@%%%var1type
+pushs GF@%%%float
+eqs
+pushs bool@true
+JUMPIFEQS %%%conv2float
+
+pushs LF@%%%var2type
+pushs GF@%%%float
+eqs
+pushs bool@true
+JUMPIFEQS %%%conv1float
+EXIT int@7 #neplatna operace
+
+LABEL %%%conv1float
+pushs LF@%%%var1
+INT2FLOATS
+pushs LF@%%%var2
+jump %%%ret
+
+LABEL %%%eq
+pushs LF@%%%var1
+pushs LF@%%%var2
+jump %%%ret
+
+LABEL %%%conv2float
+pushs LF@%%%var1
+pushs LF@%%%var2
+INT2FLOATS
+jump %%%ret
+
+LABEL %%%ret
+popframe
+createframe
+pushframe
+return
+label over%%%convert
+
+
+pushs int@5
+pushs int@6
+call  %%%convert
+adds
+
+pushs float@0x1.2666666666666p+0
+pushs int@6
+call  %%%convert
+adds
+
+pushs int@5
+pushs float@0x1.2666666666666p+0
+call  %%%convert
+adds
+
+
+pushs int@5
+pushs string@test
+call  %%%convert
+adds
+
+pushs string@test
+pushs string@test
+call  %%%convert
+adds
+
+pushs string@test
+pushs int@5
+
+call  %%%convert
+adds
+
+popframe

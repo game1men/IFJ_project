@@ -1,0 +1,36 @@
+.IFJcode22
+
+createframe
+pushframe
+
+defvar LF@var%return
+
+pushs int@10
+pushs int@20
+pushs int@30
+CALL function%test
+popframe
+pops LF@var%return
+write LF@var%return
+
+JUMP ower%%1
+LABEL function%test
+createframe
+pushframe
+
+defvar LF@var%a
+defvar LF@var%b
+defvar LF@var%c
+pops LF@var%c
+pops LF@var%b
+pops LF@var%a
+
+write LF@var%a
+write LF@var%b
+write LF@var%c
+
+MOVE  LF@var%a LF@var%c
+pushs LF@var%a
+return
+
+LABEL ower%%1

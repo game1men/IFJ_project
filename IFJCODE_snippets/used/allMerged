@@ -1,0 +1,716 @@
+.IFJcode22
+
+jump %%%owerErrorHandler
+label %%%err1
+exit int@1
+label %%%err2
+exit int@2
+label %%%err3
+exit int@3
+label %%%err4
+exit int@4
+label %%%err5
+exit int@5
+label %%%err6
+exit int@6
+label %%%err7
+exit int@7
+label %%%err8
+exit int@8
+label %%%owerErrorHandler
+
+defvar GF@%%%tmp1
+defvar GF@%%%tmp2
+defvar GF@%%%tmp3
+defvar GF@%%%tmp4
+defvar GF@%%%strlen
+defvar GF@%%%strlenvar
+defvar GF@%%%int
+move GF@%%%int string@int
+defvar GF@%%%string
+move GF@%%%string string@string
+defvar GF@%%%bool
+move GF@%%%bool string@bool
+defvar GF@%%%nil
+move GF@%%%nil string@nil
+defvar GF@%%%float
+move GF@%%%float string@float
+createframe
+pushframe
+
+jump %%%defVarsBody
+label %%%bodyStart
+######substr
+# string
+# from
+# to
+##start------------------------------------------------over%%%substr
+jump over%%%substr
+label %%%substr
+createframe
+pushframe
+    defvar LF@%%%to
+    defvar LF@%%%from
+    defvar LF@%%%string
+
+
+    pops LF@%%%to
+    pops LF@%%%from
+    pops LF@%%%string
+
+
+    defvar LF@%%%strLen
+    STRLEN LF@%%%strLen LF@%%%string
+
+    #conditions
+    defvar LF@%%condition
+    defvar LF@%%condition2
+    LT LF@%%condition LF@%%%to int@0
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%from int@0
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%to LF@%%%from
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    LT LF@%%condition LF@%%%to LF@%%%from
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    GT LF@%%condition LF@%%%to LF@%%%strLen
+    EQ LF@%%condition2 LF@%%%to LF@%%%strLen
+    OR LF@%%condition LF@%%condition LF@%%condition2
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+    GT LF@%%condition LF@%%%from LF@%%%strLen
+    JUMPIFEQ retNull%%%substr LF@%%condition bool@true
+
+    defvar LF@%%%tmpChar
+    defvar LF@%%%iter
+      defvar LF@%%%tmpString
+      move LF@%%%tmpString string@
+    move LF@%%%iter int@0
+    label lop%%%substr
+    JUMPIFEQ endLoop%%%substr LF@%%%from LF@%%%to
+
+    getchar  LF@%%%tmpChar LF@%%%string LF@%%%from
+    concat LF@%%%tmpString LF@%%%tmpString LF@%%%tmpChar
+
+    add LF@%%%iter  LF@%%%iter int@1
+    add LF@%%%from  LF@%%%from int@1
+
+    jump lop%%%substr
+
+    label endLoop%%%substr
+        pushs LF@%%%tmpString
+    jump ret%%%substr
+
+label retNull%%%substr
+pushs nil@nil
+
+label ret%%%substr
+popframe
+return
+label over%%%substr
+##end------------------------------------------------over%%%substr
+
+#converts from int/float/nil to float. anything else is err7
+##start------------------------------------------------over%%%convertToInt
+jump over%%%convertToInt
+label %%%convertToInt
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToInt  LF@%%%var1type string@int
+    jumpifeq float%%%convertToInt LF@%%%var1type string@float
+    jumpifeq nil%%%convertToInt  LF@%%%var1type string@nil
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToInt
+        pushs LF@%%%var1
+         #just return alredy right type
+
+
+    jump ret%%%convertToInt
+
+    label float%%%convertToInt
+        pushs LF@%%%var1
+        FLOAT2INTs #convert to int
+    jump ret%%%convertToInt
+
+    label nil%%%convertToInt # nill is converted to zero
+        pushs int@0
+        jump ret%%%convertToInt
+    label ret%%%convertToInt
+
+
+popframe
+return
+label over%%%convertToInt
+##end------------------------------------------------over%%%convertToInt
+##testts
+
+##start------------------------------------------------over%%%typeCheck
+jump over%%%typeCheck
+label %%%typeCheck
+createframe
+pushframe
+    defvar LF@%%%var
+    defvar LF@%%%varTypeCheck
+    defvar LF@%%%err
+    pops LF@%%%err
+    pops LF@%%%varTypeCheck
+    pops LF@%%%var
+
+        defvar LF@%%%varType
+        type LF@%%%varType LF@%%%var
+
+
+        JUMPIFEQ   ret%%%typeCheck  LF@%%%varType   LF@%%%varTypeCheck
+
+        jumpifeq %%%err1  LF@%%%err int@1
+        jumpifeq %%%err2  LF@%%%err int@2
+        jumpifeq %%%err3  LF@%%%err int@3
+        jumpifeq %%%err4  LF@%%%err int@4
+        jumpifeq %%%err5  LF@%%%err int@5
+        jumpifeq %%%err6  LF@%%%err int@6
+        jumpifeq %%%err7  LF@%%%err int@7
+
+label ret%%%typeCheck
+pushs LF@%%%var
+popframe
+return
+label over%%%typeCheck
+##end------------------------------------------------over%%%typeCheck
+
+##start------------------------------------------------over%%%typeCheck
+jump over%%%typeCheckIgnoreNil
+label %%%typeCheckIgnoreNil
+createframe
+pushframe
+    defvar LF@%%%var
+    defvar LF@%%%varTypeCheck
+    defvar LF@%%%err
+    pops LF@%%%err
+    pops LF@%%%varTypeCheck
+    pops LF@%%%var
+
+        defvar LF@%%%varType
+        type LF@%%%varType LF@%%%var
+
+
+        JUMPIFEQ   ret%%%typeCheckIgnoreNil  LF@%%%varType   LF@%%%varTypeCheck
+        JUMPIFEQ   ret%%%typeCheckIgnoreNil  LF@%%%varType   string@nil
+
+        jumpifeq %%%err1  LF@%%%err int@1
+        jumpifeq %%%err2  LF@%%%err int@2
+        jumpifeq %%%err3  LF@%%%err int@3
+        jumpifeq %%%err4  LF@%%%err int@4
+        jumpifeq %%%err5  LF@%%%err int@5
+        jumpifeq %%%err6  LF@%%%err int@6
+        jumpifeq %%%err7  LF@%%%err int@7
+
+label ret%%%typeCheckIgnoreNil
+pushs LF@%%%var
+popframe
+return
+label over%%%typeCheckIgnoreNil
+##end------------------------------------------------over%%%typeCheckIgnoreNil
+
+#converts from int/float/nil to float. anything else is err7
+##start------------------------------------------------over%%%convertToFloat
+jump over%%%convertToFloat
+label %%%convertToFloat
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToFloat  LF@%%%var1type string@int
+    jumpifeq float%%%convertToFloat LF@%%%var1type string@float
+    jumpifeq nil%%%convertToFloat  LF@%%%var1type string@nil
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToFloat
+        pushs LF@%%%var1
+        INT2FLOATs #convert to float
+
+    jump ret%%%convertToFloat
+
+    label float%%%convertToFloat
+        pushs LF@%%%var1
+        #just return alredy right type
+    jump ret%%%convertToFloat
+
+    label nil%%%convertToFloat # nill is converted to zero
+        pushs float@0x0p+0
+        jump ret%%%convertToFloat
+    label ret%%%convertToFloat
+
+
+popframe
+return
+label over%%%convertToFloat
+##end------------------------------------------------over%%%convertToFloat
+
+#converts int/float/nil according to assignment to same type. anything else is err7
+##start------------------------------------------------over%%%convertOperation
+jump over%%%convertOperation
+label %%%convertOperation
+createframe
+pushframe
+    defvar LF@%%%var2
+    pops LF@%%%var2
+    defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+    defvar LF@%%%var2type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+    type LF@%%%var2type LF@%%%var2
+
+    #jump where is type
+    jumpifeq float1%%%convertOperation LF@%%%var1type string@float
+    jumpifeq float2%%%convertOperation LF@%%%var2type string@float
+    jumpifeq int1%%%convertOperation  LF@%%%var1type string@int
+    jumpifeq int2%%%convertOperation  LF@%%%var1type string@int
+
+        #if neither try converting both to int
+        pushs LF@%%%var2
+        call %%%convertToInt
+        pushs LF@%%%var1
+        call %%%convertToInt
+        jump ret%%%convertOperation
+
+
+    #----------------------------------------
+    label float1%%%convertOperation
+    #--------------body---------------------
+        #convert var2 to float
+        pushs LF@%%%var2
+        call %%%convertToFloat
+        pushs LF@%%%var1
+
+
+       #---------------------------------------
+    jump ret%%%convertOperation
+    #---------------------------------------
+
+     #----------------------------------------
+    label float2%%%convertOperation
+    #--------------body---------------------
+        #convert var1 to float
+        pushs LF@%%%var2
+        pushs LF@%%%var1
+        call %%%convertToFloat
+
+       #---------------------------------------
+    jump ret%%%convertOperation
+    #---------------------------------------
+
+     #----------------------------------------
+    label int1%%%convertOperation
+    #--------------body---------------------
+
+        #convert var2 to int
+        pushs LF@%%%var2
+        call %%%convertToInt
+        pushs LF@%%%var1
+
+       #---------------------------------------
+    jump ret%%%convertOperation
+    #---------------------------------------
+
+     #----------------------------------------
+    label int2%%%convertOperation
+    #--------------body---------------------
+
+         #convert var1 to int
+        pushs LF@%%%var2
+            pushs LF@%%%var1
+        call %%%convertToInt
+
+
+       #---------------------------------------
+    jump ret%%%convertOperation
+    #---------------------------------------
+
+label ret%%%convertOperation
+
+popframe
+return
+label over%%%convertOperation
+##end------------------------------------------------over%%%convertOperation
+##testts
+
+#converts nil/string to string
+##start------------------------------------------------over%%%convertToString
+jump over%%%convertToString
+label %%%convertToString
+createframe
+pushframe
+    defvar LF@%%%var
+    pops LF@%%%var
+    defvar LF@%%%varType
+
+    #get type
+    type LF@%%%varType LF@%%%var
+
+    #jump where is type
+    jumpifeq nil%%%convertToString  LF@%%%varType  string@nil
+    jumpifeq string%%%convertToString LF@%%%varType  string@string
+
+    #if neither its err7
+    jump  %%%err7
+
+    label string%%%convertToString
+        pushs LF@%%%var
+         #just return alredy right type
+
+    jump ret%%%convertToString
+
+    label nil%%%convertToString
+        pushs string@ #push empty string
+    jump ret%%%convertToString
+
+    label ret%%%convertToString
+popframe
+return
+label over%%%convertToString
+##end------------------------------------------------over%%%convertToString
+##testts
+
+#converts from int/float/nil/bool/string to bool. anything else is err7
+##start------------------------------------------------over%%%convertToBool
+jump over%%%convertToBool
+label %%%convertToBool
+createframe
+pushframe
+defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%var1type
+
+    #get type
+    type LF@%%%var1type LF@%%%var1
+
+    #jump where is type
+    jumpifeq int%%%convertToBool  LF@%%%var1type string@int
+    jumpifeq float%%%convertToBool LF@%%%var1type string@float
+    jumpifeq nil%%%convertToBool  LF@%%%var1type string@nil
+    jumpifeq string%%%convertToBool  LF@%%%var1type string@string
+    jumpifeq bool%%%convertToBool  LF@%%%var1type string@bool
+
+    #if neither its err7
+    jump  %%%err7
+
+    label int%%%convertToBool
+        jumpifeq false%%%convertToBool LF@%%%var1 int@0
+        pushs bool@true
+
+    jump ret%%%convertToBool
+
+    label float%%%convertToBool
+        jumpifeq false%%%convertToBool LF@%%%var1  float@0x0p+0
+        pushs bool@true
+
+    jump ret%%%convertToBool
+
+    label nil%%%convertToBool
+
+    jump false%%%convertToBool
+
+    label string%%%convertToBool
+     jumpifeq false%%%convertToBool LF@%%%var1 string@
+  pushs bool@true
+    jump ret%%%convertToBool
+
+    label bool%%%convertToBool
+        pushs LF@%%%var1
+        jump ret%%%convertToBool
+
+    label false%%%convertToBool
+    pushs bool@false
+    label ret%%%convertToBool
+
+
+popframe
+return
+label over%%%convertToBool
+##end------------------------------------------------over%%%convertToBool
+
+#compares strings/nils (helper function for compare)
+#var1 string/nil
+#var2 string/nil
+#va3 string containing (LT,GT,EQ, LEQ, GEQ)
+##start------------------------------------------------over%%%strcmp
+jump over%%%strcmp
+label %%%strcmp
+createframe
+pushframe
+    defvar LF@%%%var2
+    pops LF@%%%var2
+    defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%comp
+    pops LF@%%%comp
+
+
+    #get types
+    defvar  LF@%%%var1type
+    type    LF@%%%var1type   LF@%%%var1
+    defvar  LF@%%%var2type
+    type    LF@%%%var2type   LF@%%%var2
+
+
+    #convert both varriables to strings
+    pushs LF@%%%var1
+    call %%%convertToString
+    pops LF@%%%var1
+
+    pushs LF@%%%var2
+    call %%%convertToString
+    pops LF@%%%var2
+
+
+
+    JUMPIFEQ LT%%%strcmp    LF@%%%comp  string@LT
+    JUMPIFEQ GT%%%strcmp    LF@%%%comp  string@GT
+    JUMPIFEQ EQ%%%strcmp    LF@%%%comp  string@EQ
+    JUMPIFEQ LEQ%%%strcmp   LF@%%%comp  string@LEQ
+    JUMPIFEQ GEQ%%%strcmp   LF@%%%comp  string@GEQ
+    JUMPIFEQ NEQ%%%strcmp   LF@%%%comp  string@NEQ
+
+    label LT%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         LTS
+    jump ret%%%strcmp
+
+    label GT%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         GTS
+    jump ret%%%strcmp
+
+    label EQ%%%strcmp
+        pushs LF@%%%var1
+        pushs LF@%%%var2
+        EQS
+        pushs LF@%%%var1type
+        pushs LF@%%%var2type
+        EQS
+        ANDS
+    jump ret%%%strcmp
+
+    label NEQ%%%strcmp
+        pushs LF@%%%var1
+        pushs LF@%%%var2
+        EQS
+        pushs LF@%%%var1type
+        pushs LF@%%%var2type
+        EQS
+        ANDS
+        NOTS
+    jump ret%%%strcmp
+
+    label LEQ%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         LTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%strcmp
+
+    label GEQ%%%strcmp
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         GTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%strcmp
+
+
+
+
+label ret%%%strcmp
+popframe
+return
+label over%%%strcmp
+##end------------------------------------------------over%%%strcmp
+
+
+
+#compares values
+#var1 value
+#var2 value
+#va3 string containing (LT,GT,EQ, LEQ, GEQ, NEQ)
+##start------------------------------------------------over%%%compare
+jump over%%%compare
+label %%%compare
+createframe
+pushframe
+    defvar LF@%%%var2
+    pops LF@%%%var2
+    defvar LF@%%%var1
+    pops LF@%%%var1
+    defvar LF@%%%comp
+    pops LF@%%%comp
+
+    #get types
+    defvar  LF@%%%var1type
+    type    LF@%%%var1type   LF@%%%var1
+    defvar  LF@%%%var2type
+    type    LF@%%%var2type   LF@%%%var2
+
+    #if any var is string go to string compare
+    JUMPIFNEQ ower1%%%compare    LF@%%%var1type  string@string
+    JUMPIFNEQ ower1%%%compare    LF@%%%var2type  string@string
+    pushs LF@%%%comp
+    pushs LF@%%%var1
+    pushs LF@%%%var2
+    call  %%%strcmp
+    jump ret%%%compare
+    label ower1%%%compare
+
+    #convert to same type
+    pushs LF@%%%var1
+    pushs LF@%%%var2
+    call %%%convertOperation
+    pops LF@%%%var1
+    pops LF@%%%var2
+
+
+    JUMPIFEQ LT%%%compare    LF@%%%comp  string@LT
+    JUMPIFEQ GT%%%compare    LF@%%%comp  string@GT
+    JUMPIFEQ EQ%%%compare    LF@%%%comp  string@EQ
+    JUMPIFEQ LEQ%%%compare   LF@%%%comp  string@LEQ
+    JUMPIFEQ GEQ%%%compare   LF@%%%comp  string@GEQ
+    JUMPIFEQ NEQ%%%compare   LF@%%%comp  string@NEQ
+
+    label LT%%%compare
+         pushs LF@%%%var2
+         pushs LF@%%%var1
+         LTS
+    jump ret%%%compare
+
+    label GT%%%compare
+         pushs LF@%%%var2
+         pushs LF@%%%var1
+         GTS
+    jump ret%%%compare
+
+    label EQ%%%compare
+        pushs LF@%%%var1
+        pushs LF@%%%var2
+        EQS
+        pushs LF@%%%var2type
+        pushs LF@%%%var1type
+        EQS
+        ANDS
+    jump ret%%%compare
+
+    label NEQ%%%compare
+        pushs LF@%%%var1
+        pushs LF@%%%var2
+        EQS
+        pushs LF@%%%var1type
+        pushs LF@%%%var2type
+        EQS
+        ANDS
+        NOTS
+    jump ret%%%compare
+
+    label LEQ%%%compare
+         pushs LF@%%%var2
+         pushs LF@%%%var1
+         LTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%compare
+
+    label GEQ%%%compare
+         pushs LF@%%%var2
+         pushs LF@%%%var1
+         GTS
+         pushs LF@%%%var1
+         pushs LF@%%%var2
+         EQS
+         ORS
+    jump ret%%%compare
+
+
+
+
+label ret%%%compare
+popframe
+return
+label over%%%compare
+##end------------------------------------------------over%%%compare
+######prints to stdout
+# arg0
+# ...
+# argn
+#int argument count (without this argument)
+##start------------------------------------------------over%%%printf
+jump over%%%printf
+label %%%printf
+createframe
+pushframe
+    defvar LF@%%%argcount
+    pops LF@%%%argcount
+      defvar LF@%%%iter
+      move LF@%%%iter int@0
+
+        JUMPIFEQ   ret%%%printf int@0  LF@%%%argcount
+
+        defvar LF@%%%write
+        pops   LF@%%%write
+        sub  LF@%%%argcount  LF@%%%argcount  int@1
+        pushs LF@%%%argcount
+        call %%%printf
+        write  LF@%%%write
+
+
+label ret%%%printf
+popframe
+return
+label over%%%printf
+##end------------------------------------------------over%%%printf
+##testts
+
+##testts
+
+##testts
+
+    defvar LF@%%%var1
+    defvar LF@%%%var2
+
+pushs int@1
+pushs int@2
+
+call %%%convertOperation
+pops LF@%%%var1
+write LF@%%%var1
+write string@,
+pops LF@%%%var2
+write LF@%%%var2
+
+popframe
