@@ -30,7 +30,6 @@ AST* GetArithmeticTree(List* tokenList, T_token** lastToken, Stack* variableScop
 
 /// @brief Recursively creates the nodes for the AST tree
 /// @param postfixList Inverted input postfix expression list
-/// @param err Error flag
 /// @param varScope Variable scope stack
 /// @return Valid tree, empty tree on empty postfix or NULL on error
 AST* _CreateNode(List* postfixList, Stack* varScope) {
@@ -95,6 +94,10 @@ void _ConvertToAstNode(AST* tree, PostFixItem* item, Stack* varScope) {
             }
             break;
         }
+        case KEYWORD:
+            tree->nodeT = n_constant;
+            tree->varT = void_type;
+            break;
         case NOT_EQ:
             tree->nodeT = n_comp;
             tree->cmpT = neq;
@@ -163,7 +166,7 @@ List* _ConvertToPostfix(List* tokenList, T_token** lastToken) {
     }
 
     // Get first token
-    T_token* currentToken = _GetNextToken(tokenList);
+    T_token* currentToken = GetNextBufferToken(tokenList);
 
     *lastToken = currentToken;
 
@@ -234,7 +237,7 @@ List* _ConvertToPostfix(List* tokenList, T_token** lastToken) {
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
-        currentPfItem = _CreatePFItem(_GetNextToken(tokenList));
+        currentPfItem = _CreatePFItem(GetNextBufferToken(tokenList));
 
         *lastToken = currentPfItem->token;
     } // end of while
@@ -300,23 +303,6 @@ int _EmptyTo(int desiredPrecedence, bool toSamePrecedenceInclusive, Stack* stack
     return ex;
 }
 
-/// @brief Gets the next token either from buffer or program input
-/// @param buffer Token buffer
-/// @return Token from buffer or input
-T_token* _GetNextToken(List* buffer) {
-    int ex = OK;
-    T_token* bufferToken = (T_token*)ListGetFirst(buffer, &ex);
-
-    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
-
-    // buffer is empty, getting from input
-    if (bufferToken == NULL) return getToken();
-
-    ex = ListDeleteFirst(buffer);
-    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
-    return bufferToken;
-}
-
 /// @brief Creates post fix item from input token
 /// @param token Input token
 /// @return Postfix item, NULL when token is NULL or on malloc fail
@@ -338,6 +324,9 @@ PostFixItem* _CreatePFItem(T_token* token) {
         case FLOAT_DEC_EXP:
         case VAR:
             item->pftype = PF_NUMBER;
+            break;
+        case KEYWORD:
+            if(strcmp(token->val->chars, "null") == 0) item->pftype = PF_NUMBER;
             break;
         case NOT_EQ:
         case EQ:
