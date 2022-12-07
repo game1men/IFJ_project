@@ -15,10 +15,15 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
             DisposeStack(symtable, freeStack);
         }
 
+        // if (BTsearch(Top(symtable, erre), prevToken->val)) {
         if (IsInScope(prevToken->val, symtable)) {
             varTree->nodeT = n_asignVar;
-        } else
+        } else {
             varTree->nodeT = n_defvar;
+            int er = OK;
+            BTinsert(Top(symtable, &er), prevToken->val, NULL);
+            if(er!=OK) {exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));}
+        }
 
         varTree->name = prevToken->val;
 
