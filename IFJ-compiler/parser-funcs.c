@@ -252,14 +252,16 @@ AST* parseCallParams(Stack* symtable, List* buffer, bool firstCall, T_funParam* 
     // Perform only for functions with arguments
     while (true) {
         AST* argVal = GetStringTree(&buffer, &lastToken, symtable);
-        if (lastToken->type != COLON || lastToken->type != RIGHT_PAR) {
+        if (lastToken->type != COMMA && lastToken->type != RIGHT_PAR) {
             if (argVal != NULL) ASTDtor(argVal, false);
             argVal = GetArithmeticTree(buffer, &lastToken, symtable);
+        } else {
+            InitList(buffer);
         }
 
         // arg is empty or is conditional expression
         // would result in fun(,) as fun() is already handled
-        if (argVal->nodeT == n_undefined || argVal->nodeT == n_comp) {
+        if ((argVal->nodeT == n_undefined || argVal->nodeT == n_comp) && funInfo->argCount != -1) {
             exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
         }
 
@@ -278,7 +280,7 @@ AST* parseCallParams(Stack* symtable, List* buffer, bool firstCall, T_funParam* 
         if (lastToken->type == RIGHT_PAR) break;
 
         // Invalid expresion in parameter
-        if (lastToken->type != COLON) {
+        if (lastToken->type != COMMA) {
             exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
         }
 

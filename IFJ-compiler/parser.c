@@ -145,14 +145,16 @@ AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable) {
     }
 
     AST* root = tree;
+    tree->nodeT = n_stList;
 
     while (token->type != TOKEN_EOF) {
 
         token = getToken();
         tree->left = BODYCASE(token, symtable, funtable);
+            if(tree->left == NULL) break;
         tree->right = ASTInit();
-        tree->right->nodeT = n_stList;
         tree = tree->right;
+        tree->nodeT = n_stList;
     }
 
     return root;
@@ -195,6 +197,8 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+
+            return tmp;
             break;
         }
 
@@ -216,6 +220,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+            return temp;
             break;
         }
 
@@ -233,6 +238,8 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+
+            return temp;
             break;
         }
 
@@ -250,6 +257,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+            return temp;
             break;
         }
 
@@ -267,6 +275,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+            return temp;
             break;
         }
 
@@ -274,6 +283,8 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
             exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             break;
+        case RIGHT_CUR_BRACK:
+            return NULL;
 
         default: {
             T_token* lastToken = tokenInit();
@@ -289,6 +300,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
+            return temp;
             break;
         }
     }

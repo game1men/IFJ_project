@@ -1283,10 +1283,10 @@ void generate(AST* tree, char* frame, String* bodyVars, String* funVars, bool in
             break;
         case n_stList: {
             AST* ast_tmp = tree;
-            while (ast_tmp->right != NULL) {
+           do {
                 generate(ast_tmp->left, "LF", bodyVars, funVars, inFunction);
                 ast_tmp = ast_tmp->right;
-            }
+            } while (ast_tmp != NULL);
         } break;
         case n_comp:
             Gcompare(tree, "LF", bodyVars, funVars, inFunction);

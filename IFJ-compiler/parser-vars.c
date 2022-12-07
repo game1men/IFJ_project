@@ -42,9 +42,7 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
 
         AST* tree = ASTInit();
         if (tree == NULL) {
-            freeAll(varTree, token, symtable);
-            tokenDtor(*lastToken);
-            DisposeList(tokenList, freeList);
+           
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
@@ -76,10 +74,7 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
             else if (tree->nodeT == n_comp)
                 e = 1;
             if (e == 1) {
-                freeAll(varTree, token, symtable);
-                tokenDtor(*lastToken);
-                DisposeList(tokenList, freeList);
-                ASTDtor(tree, true);
+                
                 exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
             }
         }
@@ -92,25 +87,20 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
     else {
         AST* tree = ASTInit();
         if (tree == NULL) {
-            tokenDtor(token);
-            DisposeStack(symtable, freeStack);
-            tokenDtor(*lastToken);
+           
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
         List* tokenList = malloc(sizeof(List));
         if (tokenList == NULL) {
-            freeAll(tree, token, symtable);
-            tokenDtor(*lastToken);
+           
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
         int err = InitList(tokenList);
 
         if (err != OK) {
-            freeAll(tree, token, symtable);
-            tokenDtor(*lastToken);
-            DisposeList(tokenList, freeList);
+            
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
@@ -139,9 +129,7 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
             else if (tree->nodeT == n_comp)
                 e = 1;
             if (e == 1) {
-                freeAll(tree, token, symtable);
-                tokenDtor(*lastToken);
-                DisposeList(tokenList, freeList);
+                
                 exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
             }
         }
