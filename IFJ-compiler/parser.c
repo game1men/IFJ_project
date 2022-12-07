@@ -198,7 +198,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
 
-            return tmp;
             break;
         }
 
@@ -220,7 +219,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
-            return temp;
             break;
         }
 
@@ -239,7 +237,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
 
-            return temp;
             break;
         }
 
@@ -257,7 +254,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
-            return temp;
             break;
         }
 
@@ -275,7 +271,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
-            return temp;
             break;
         }
 
@@ -300,7 +295,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 tokenDtor(lastToken);
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
-            return temp;
             break;
         }
     }
