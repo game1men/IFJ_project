@@ -1,6 +1,6 @@
 /*********************************************************************
- * \file   scanner.c
- * \brief  Main file for scanner (IFJ project 2022)
+ * \file   generator.c
+ * \brief  Main file for generator (IFJ project 2022)
  *
  * \author Rene Ceska xceska06
  * \date   October 2022
@@ -9,14 +9,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "generator.h"
 
-String* bodyVars;
-String* funVars;
-bool inFunction;
 
-// converts string to right format
 char* _stringConvert(String* s) {
     int err;
     String* newS = InitString(&err);
@@ -47,7 +42,8 @@ char* _stringConvert(String* s) {
 
                 switch (s->chars[x + 1]) {
                     case '"':
-                        err = AppendChar(newS, '\\');
+                        if (AppendChar(newS, '"') != OK)
+                            exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
                         x++;
                         break;
                     case 'n':
@@ -195,6 +191,7 @@ void header() {
            "exit int@8\n"
            "label %%%%%%owerErrorHandler\n"
            "\n"
+           "defvar GF@%%read \n"
            "defvar GF@%%%%%%tmp1\n"
            "defvar GF@%%%%%%tmp2\n"
            "defvar GF@%%%%%%tmp3\n"
@@ -223,8 +220,8 @@ void header() {
            "##start------------------------------------------------over%%%%%%substr\n"
            "jump over%%%%%%substr\n"
            "label %%%%%%substr\n"
-           "createframe\n"
-           "pushframe\n"
+           "createframe\n");
+    printf("pushframe\n"
            "    defvar LF@%%%%%%to\n"
            "    defvar LF@%%%%%%from\n"
            "    defvar LF@%%%%%%string\n"
@@ -265,8 +262,8 @@ void header() {
            "    JUMPIFEQ endLoop%%%%%%substr LF@%%%%%%from LF@%%%%%%to\n"
            "\n"
            "    getchar  LF@%%%%%%tmpChar LF@%%%%%%string LF@%%%%%%from\n"
-           "    concat LF@%%%%%%tmpString LF@%%%%%%tmpString LF@%%%%%%tmpChar\n");
-    printf("\n"
+           "    concat LF@%%%%%%tmpString LF@%%%%%%tmpString LF@%%%%%%tmpChar\n"
+           "\n"
            "    add LF@%%%%%%iter  LF@%%%%%%iter int@1\n"
            "    add LF@%%%%%%from  LF@%%%%%%from int@1\n"
            "\n"
@@ -292,8 +289,8 @@ void header() {
            "createframe\n"
            "pushframe\n"
            "defvar LF@%%%%%%var1\n"
-           "    pops LF@%%%%%%var1\n"
-           "    defvar LF@%%%%%%var1type\n"
+           "    pops LF@%%%%%%var1\n");
+    printf("    defvar LF@%%%%%%var1type\n"
            "\n"
            "    #get type\n"
            "    type LF@%%%%%%var1type LF@%%%%%%var1\n"
@@ -345,8 +342,8 @@ void header() {
            "        defvar LF@%%%%%%varType\n"
            "        type LF@%%%%%%varType LF@%%%%%%var\n"
            "\n"
-           "\n");
-    printf("        JUMPIFEQ   ret%%%%%%typeCheck  LF@%%%%%%varType   LF@%%%%%%varTypeCheck\n"
+           "\n"
+           "        JUMPIFEQ   ret%%%%%%typeCheck  LF@%%%%%%varType   LF@%%%%%%varTypeCheck\n"
            "\n"
            "        jumpifeq %%%%%%err1  LF@%%%%%%err int@1\n"
            "        jumpifeq %%%%%%err2  LF@%%%%%%err int@2\n"
@@ -361,95 +358,95 @@ void header() {
            "popframe\n"
            "return\n"
            "label over%%%%%%typeCheck\n"
-           "##end------------------------------------------------over%%%%%%typeCheck\n"
-           "\n"
-           "##start------------------------------------------------over%%%%%%typeCheck\n"
-           "jump over%%%%%%typeCheckIgnoreNil\n"
-           "label %%%%%%typeCheckIgnoreNil\n"
-           "createframe\n"
-           "pushframe\n"
-           "    defvar LF@%%%%%%var\n"
-           "    defvar LF@%%%%%%varTypeCheck\n"
-           "    defvar LF@%%%%%%err\n"
-           "    pops LF@%%%%%%err\n"
-           "    pops LF@%%%%%%varTypeCheck\n"
-           "    pops LF@%%%%%%var\n");
-    printf("\n"
-           "        defvar LF@%%%%%%varType\n"
-           "        type LF@%%%%%%varType LF@%%%%%%var\n"
-           "\n"
-           "\n"
-           "        JUMPIFEQ   ret%%%%%%typeCheckIgnoreNil  LF@%%%%%%varType   "
-           "LF@%%%%%%varTypeCheck\n"
-           "        JUMPIFEQ   ret%%%%%%typeCheckIgnoreNil  LF@%%%%%%varType   string@nil\n"
-           "\n"
-           "        jumpifeq %%%%%%err1  LF@%%%%%%err int@1\n"
-           "        jumpifeq %%%%%%err2  LF@%%%%%%err int@2\n"
-           "        jumpifeq %%%%%%err3  LF@%%%%%%err int@3\n"
-           "        jumpifeq %%%%%%err4  LF@%%%%%%err int@4\n"
-           "        jumpifeq %%%%%%err5  LF@%%%%%%err int@5\n"
-           "        jumpifeq %%%%%%err6  LF@%%%%%%err int@6\n"
-           "        jumpifeq %%%%%%err7  LF@%%%%%%err int@7\n"
-           "\n"
-           "label ret%%%%%%typeCheckIgnoreNil\n"
-           "pushs LF@%%%%%%var\n"
-           "popframe\n"
-           "return\n"
-           "label over%%%%%%typeCheckIgnoreNil\n"
-           "##end------------------------------------------------over%%%%%%typeCheckIgnoreNil\n"
-           "\n"
-           "#converts from int/float/nil to float. anything else is err7\n"
-           "##start------------------------------------------------over%%%%%%convertToFloat\n"
-           "jump over%%%%%%convertToFloat\n"
-           "label %%%%%%convertToFloat\n"
-           "createframe\n"
-           "pushframe\n"
-           "defvar LF@%%%%%%var1\n"
-           "    pops LF@%%%%%%var1\n"
-           "    defvar LF@%%%%%%var1type\n"
-           "\n"
-           "    #get type\n"
-           "    type LF@%%%%%%var1type LF@%%%%%%var1\n"
-           "\n"
-           "    #jump where is type\n"
-           "    jumpifeq int%%%%%%convertToFloat  LF@%%%%%%var1type string@int\n"
-           "    jumpifeq float%%%%%%convertToFloat LF@%%%%%%var1type string@float\n"
-           "    jumpifeq nil%%%%%%convertToFloat  LF@%%%%%%var1type string@nil\n"
-           "\n"
-           "    #if neither its err7\n"
-           "    jump  %%%%%%err7\n"
-           "\n"
-           "    label int%%%%%%convertToFloat\n"
-           "        pushs LF@%%%%%%var1\n"
-           "        INT2FLOATs #convert to float\n"
-           "\n"
-           "    jump ret%%%%%%convertToFloat\n"
-           "\n"
-           "    label float%%%%%%convertToFloat\n"
-           "        pushs LF@%%%%%%var1\n"
-           "        #just return alredy right type\n"
-           "    jump ret%%%%%%convertToFloat\n"
-           "\n"
-           "    label nil%%%%%%convertToFloat # nill is converted to zero\n"
-           "        pushs float@0x0p+0\n"
-           "        jump ret%%%%%%convertToFloat\n"
-           "    label ret%%%%%%convertToFloat\n"
-           "\n"
-           "\n"
-           "popframe\n"
-           "return\n"
-           "label over%%%%%%convertToFloat\n"
-           "##end------------------------------------------------over%%%%%%convertToFloat\n"
-           "\n"
-           "#converts int/float/nil according to assignment to same type. anything else is err7\n"
-           "##start------------------------------------------------over%%%%%%convertOperation\n"
-           "jump over%%%%%%convertOperation\n"
-           "label %%%%%%convertOperation\n"
-           "createframe\n"
-           "pushframe\n"
-           "    defvar LF@%%%%%%var2\n"
-           "    pops LF@%%%%%%var2\n"
-           "    defvar LF@%%%%%%var1\n"
+           "##end------------------------------------------------over%%%%%%typeCheck\n");
+    printf(
+        "\n"
+        "##start------------------------------------------------over%%%%%%typeCheck\n"
+        "jump over%%%%%%typeCheckIgnoreNil\n"
+        "label %%%%%%typeCheckIgnoreNil\n"
+        "createframe\n"
+        "pushframe\n"
+        "    defvar LF@%%%%%%var\n"
+        "    defvar LF@%%%%%%varTypeCheck\n"
+        "    defvar LF@%%%%%%err\n"
+        "    pops LF@%%%%%%err\n"
+        "    pops LF@%%%%%%varTypeCheck\n"
+        "    pops LF@%%%%%%var\n"
+        "\n"
+        "        defvar LF@%%%%%%varType\n"
+        "        type LF@%%%%%%varType LF@%%%%%%var\n"
+        "\n"
+        "\n"
+        "        JUMPIFEQ   ret%%%%%%typeCheckIgnoreNil  LF@%%%%%%varType   LF@%%%%%%varTypeCheck\n"
+        "        JUMPIFEQ   ret%%%%%%typeCheckIgnoreNil  LF@%%%%%%varType   string@nil\n"
+        "\n"
+        "        jumpifeq %%%%%%err1  LF@%%%%%%err int@1\n"
+        "        jumpifeq %%%%%%err2  LF@%%%%%%err int@2\n"
+        "        jumpifeq %%%%%%err3  LF@%%%%%%err int@3\n"
+        "        jumpifeq %%%%%%err4  LF@%%%%%%err int@4\n"
+        "        jumpifeq %%%%%%err5  LF@%%%%%%err int@5\n"
+        "        jumpifeq %%%%%%err6  LF@%%%%%%err int@6\n"
+        "        jumpifeq %%%%%%err7  LF@%%%%%%err int@7\n"
+        "\n"
+        "label ret%%%%%%typeCheckIgnoreNil\n"
+        "pushs LF@%%%%%%var\n"
+        "popframe\n"
+        "return\n"
+        "label over%%%%%%typeCheckIgnoreNil\n"
+        "##end------------------------------------------------over%%%%%%typeCheckIgnoreNil\n"
+        "\n"
+        "#converts from int/float/nil to float. anything else is err7\n"
+        "##start------------------------------------------------over%%%%%%convertToFloat\n"
+        "jump over%%%%%%convertToFloat\n"
+        "label %%%%%%convertToFloat\n"
+        "createframe\n"
+        "pushframe\n"
+        "defvar LF@%%%%%%var1\n"
+        "    pops LF@%%%%%%var1\n"
+        "    defvar LF@%%%%%%var1type\n"
+        "\n"
+        "    #get type\n"
+        "    type LF@%%%%%%var1type LF@%%%%%%var1\n"
+        "\n"
+        "    #jump where is type\n"
+        "    jumpifeq int%%%%%%convertToFloat  LF@%%%%%%var1type string@int\n"
+        "    jumpifeq float%%%%%%convertToFloat LF@%%%%%%var1type string@float\n"
+        "    jumpifeq nil%%%%%%convertToFloat  LF@%%%%%%var1type string@nil\n"
+        "\n"
+        "    #if neither its err7\n"
+        "    jump  %%%%%%err7\n"
+        "\n"
+        "    label int%%%%%%convertToFloat\n"
+        "        pushs LF@%%%%%%var1\n"
+        "        INT2FLOATs #convert to float\n"
+        "\n"
+        "    jump ret%%%%%%convertToFloat\n"
+        "\n"
+        "    label float%%%%%%convertToFloat\n"
+        "        pushs LF@%%%%%%var1\n"
+        "        #just return alredy right type\n"
+        "    jump ret%%%%%%convertToFloat\n"
+        "\n"
+        "    label nil%%%%%%convertToFloat # nill is converted to zero\n"
+        "        pushs float@0x0p+0\n"
+        "        jump ret%%%%%%convertToFloat\n"
+        "    label ret%%%%%%convertToFloat\n"
+        "\n"
+        "\n"
+        "popframe\n"
+        "return\n"
+        "label over%%%%%%convertToFloat\n"
+        "##end------------------------------------------------over%%%%%%convertToFloat\n"
+        "\n"
+        "#converts int/float/nil according to assignment to same type. anything else is err7\n"
+        "##start------------------------------------------------over%%%%%%convertOperation\n"
+        "jump over%%%%%%convertOperation\n"
+        "label %%%%%%convertOperation\n"
+        "createframe\n"
+        "pushframe\n"
+        "    defvar LF@%%%%%%var2\n"
+        "    pops LF@%%%%%%var2\n");
+    printf("    defvar LF@%%%%%%var1\n"
            "    pops LF@%%%%%%var1\n"
            "    defvar LF@%%%%%%var1type\n"
            "    defvar LF@%%%%%%var2type\n"
@@ -492,8 +489,8 @@ void header() {
            "        pushs LF@%%%%%%var2\n"
            "        pushs LF@%%%%%%var1\n"
            "        call %%%%%%convertToFloat\n"
-           "\n");
-    printf("       #---------------------------------------\n"
+           "\n"
+           "       #---------------------------------------\n"
            "    jump ret%%%%%%convertOperation\n"
            "    #---------------------------------------\n"
            "\n"
@@ -506,8 +503,8 @@ void header() {
            "        call %%%%%%convertToInt\n"
            "        pushs LF@%%%%%%var1\n"
            "\n"
-           "       #---------------------------------------\n"
-           "    jump ret%%%%%%convertOperation\n"
+           "       #---------------------------------------\n");
+    printf("    jump ret%%%%%%convertOperation\n"
            "    #---------------------------------------\n"
            "\n"
            "     #----------------------------------------\n"
@@ -577,8 +574,8 @@ void header() {
            "pushframe\n"
            "defvar LF@%%%%%%var1\n"
            "    pops LF@%%%%%%var1\n"
-           "    defvar LF@%%%%%%var1type\n");
-    printf("\n"
+           "    defvar LF@%%%%%%var1type\n"
+           "\n"
            "    #get type\n"
            "    type LF@%%%%%%var1type LF@%%%%%%var1\n"
            "\n"
@@ -592,8 +589,8 @@ void header() {
            "    #if neither its err7\n"
            "    jump  %%%%%%err7\n"
            "\n"
-           "    label int%%%%%%convertToBool\n"
-           "        jumpifeq false%%%%%%convertToBool LF@%%%%%%var1 int@0\n"
+           "    label int%%%%%%convertToBool\n");
+    printf("        jumpifeq false%%%%%%convertToBool LF@%%%%%%var1 int@0\n"
            "        pushs bool@true\n"
            "\n"
            "    jump ret%%%%%%convertToBool\n"
@@ -609,6 +606,7 @@ void header() {
            "    jump false%%%%%%convertToBool\n"
            "\n"
            "    label string%%%%%%convertToBool\n"
+           "     jumpifeq false%%%%%%convertToBool LF@%%%%%%var1 string@0\n"
            "     jumpifeq false%%%%%%convertToBool LF@%%%%%%var1 string@\n"
            "  pushs bool@true\n"
            "    jump ret%%%%%%convertToBool\n"
@@ -626,7 +624,6 @@ void header() {
            "return\n"
            "label over%%%%%%convertToBool\n"
            "##end------------------------------------------------over%%%%%%convertToBool\n"
-           "\n"
            "#compares strings/nils (helper function for compare)\n"
            "#var1 string/nil\n"
            "#var2 string/nil\n"
@@ -670,14 +667,14 @@ void header() {
            "    JUMPIFEQ NEQ%%%%%%strcmp   LF@%%%%%%comp  string@NEQ\n"
            "\n"
            "    label LT%%%%%%strcmp\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         LTS\n"
            "    jump ret%%%%%%strcmp\n"
            "\n"
            "    label GT%%%%%%strcmp\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         GTS\n"
            "    jump ret%%%%%%strcmp\n"
            "\n"
@@ -686,8 +683,8 @@ void header() {
            "        pushs LF@%%%%%%var2\n"
            "        EQS\n"
            "        pushs LF@%%%%%%var1type\n"
-           "        pushs LF@%%%%%%var2type\n"
-           "        EQS\n"
+           "        pushs LF@%%%%%%var2type\n");
+    printf("        EQS\n"
            "        ANDS\n"
            "    jump ret%%%%%%strcmp\n"
            "\n"
@@ -703,21 +700,21 @@ void header() {
            "    jump ret%%%%%%strcmp\n"
            "\n"
            "    label LEQ%%%%%%strcmp\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         LTS\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         EQS\n"
            "         ORS\n"
            "    jump ret%%%%%%strcmp\n"
            "\n"
            "    label GEQ%%%%%%strcmp\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         GTS\n"
-           "         pushs LF@%%%%%%var1\n"
            "         pushs LF@%%%%%%var2\n"
+           "         pushs LF@%%%%%%var1\n"
            "         EQS\n"
            "         ORS\n"
            "    jump ret%%%%%%strcmp\n"
@@ -747,17 +744,19 @@ void header() {
            "    defvar LF@%%%%%%var1\n"
            "    pops LF@%%%%%%var1\n"
            "    defvar LF@%%%%%%comp\n"
-           "    pops LF@%%%%%%comp\n");
-    printf("\n"
+           "    pops LF@%%%%%%comp\n"
+           "\n"
            "    #get types\n"
            "    defvar  LF@%%%%%%var1type\n"
            "    type    LF@%%%%%%var1type   LF@%%%%%%var1\n"
            "    defvar  LF@%%%%%%var2type\n"
            "    type    LF@%%%%%%var2type   LF@%%%%%%var2\n"
            "\n"
-           "    #if any var is string go to string compare\n"
-           "    JUMPIFNEQ ower1%%%%%%compare    LF@%%%%%%var1type  string@string\n"
-           "    JUMPIFNEQ ower1%%%%%%compare    LF@%%%%%%var2type  string@string\n"
+           "    #if any var is string go to string compare\n");
+    printf("    JUMPIFEQ c%%%%%%compare    LF@%%%%%%var1type  string@string\n"
+           "    JUMPIFEQ c%%%%%%compare    LF@%%%%%%var2type  string@string\n"
+           "    jump ower1%%%%%%compare\n"
+           "    label c%%%%%%compare\n"
            "    pushs LF@%%%%%%comp\n"
            "    pushs LF@%%%%%%var1\n"
            "    pushs LF@%%%%%%var2\n"
@@ -831,8 +830,8 @@ void header() {
            "         pushs LF@%%%%%%var2\n"
            "         EQS\n"
            "         ORS\n"
-           "    jump ret%%%%%%compare\n"
-           "\n"
+           "    jump ret%%%%%%compare\n");
+    printf("\n"
            "\n"
            "\n"
            "\n"
@@ -873,7 +872,7 @@ void header() {
            "##end------------------------------------------------over%%%%%%printf\n");
 }
 
-void footer() {
+void footer(String* bodyVars) {
     printf("jump %%%%%%owerdefVarsBody\n");
     printf("label %%%%%%defVarsBody\n");
     printf("%s", bodyVars->chars); // if any vars were in main body print them
@@ -883,7 +882,7 @@ void footer() {
     printf("POPFRAME\n");
 }
 
-void GdefVar(AST* tree, char* frame) {
+void GdefVar(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
     if (inFunction) {
         int sizeNeeded = snprintf(NULL, 0, "DEFVAR %s@%s\n", frame, tree->name->chars);
         char tmp[sizeNeeded];
@@ -902,43 +901,43 @@ void GdefVar(AST* tree, char* frame) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
     }
-    generate(tree->right, frame);
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("POPS %s@%s\n", frame, tree->name->chars);
 }
 
-void GasVar(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void GasVar(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("POPS %s@%s\n", frame, tree->name->chars);
 }
 
-void Gfloatval(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gfloatval(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call  %%%%%%convertToFloat\n");
 }
 
-void Gintval(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gintval(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call  %%%%%%convertToInt\n");
 }
 
-void Gstringval(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gstringval(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call  %%%%%%convertToString\n");
 }
 
-void Gconcat(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gconcat(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("call  %%%%%%convertToString\n");
-    generate(tree->left, frame);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call  %%%%%%convertToString\n");
     printf("pops GF@%%%%%%tmp1\n");
     printf("pops GF@%%%%%%tmp2\n");
-    printf("concat GF@%%%%%%tmp1 GF@%%%%%%tmp1 GF@%%%%%%tmp2");
+    printf("concat GF@%%%%%%tmp1 GF@%%%%%%tmp1 GF@%%%%%%tmp2\n");
     printf("pushs GF@%%%%%%tmp1\n");
 }
 
-void Gstrlen(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gstrlen(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("pushs string@string\n");
     printf("pushs int@4\n");
     printf("call %%%%%%typeCheck\n");
@@ -947,18 +946,23 @@ void Gstrlen(AST* tree, char* frame) {
     printf("pushs GF@%%%%%%strlen\n");
 }
 
-void Gord(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gord(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("pushs string@string\n");
     printf("pushs int@4\n");
     printf("call %%%%%%typeCheck\n");
     printf("pops GF@%%%%%%strlenvar\n");
+    printf("jumpifeq owerord%%%%%%%d GF@%%%%%%strlenvar string@\n", tree->id);
     printf("STRI2INT GF@%%%%%%strlen GF@%%%%%%strlenvar int@0\n");
     printf("pushs GF@%%%%%%strlen\n");
+    printf("jump owerowerord%%%%%%%d\n", tree->id);
+    printf("label owerord%%%%%%%d\n", tree->id);
+    printf("pushs int@0\n");
+    printf("label owerowerord%%%%%%%d\n", tree->id);
 }
 
-void Gchr(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gchr(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("pushs string@int\n");
     printf("pushs int@4\n");
     printf("call %%%%%%typeCheck\n");
@@ -967,31 +971,31 @@ void Gchr(AST* tree, char* frame) {
     printf("pushs GF@%%%%%%strlen\n");
 }
 
-void Gsubstr(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Gsubstr(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%substr\n");
 }
 
 void Gread(AST* tree) {
     switch (tree->varT) {
         case int_type:
-            printf("READ GF@%%readi int\n");
-            printf("PUSHS GF@%%readi\n");
+            printf("READ GF@%%read int\n");
+            printf("PUSHS GF@%%read\n");
             break;
         case float_type:
-            printf("READ GF@%%readf float\n");
-            printf("PUSHS GF@%%readf\n");
+            printf("READ GF@%%read float\n");
+            printf("PUSHS GF@%%read\n");
             break;
         case string_type:
-            printf("READ GF@%%reads string\n");
-            printf("PUSHS GF@%%reads\n");
+            printf("READ GF@%%read string\n");
+            printf("PUSHS GF@%%read\n");
             break;
         default:
             break;
     }
 }
 
-void Gcompare(AST* tree, char* frame) {
+void Gcompare(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
 
     switch (tree->cmpT) {
         case lt:
@@ -1016,44 +1020,46 @@ void Gcompare(AST* tree, char* frame) {
         default:
             break;
     }
-    generate(tree->right, frame);
-    generate(tree->left, frame);
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%compare\n");
 }
 
-void Gif(AST* tree, char* frame) {
+void Gif(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
     printf("#condition-----------------\n");
-    generate(tree->left, frame);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertToBool\n");
     printf("PUSHs bool@true\n");
     printf("JUMPIFNEQS ower1%%%d # if\n", tree->id);
-    generate(tree->middle, frame);
+    generate(tree->middle, frame, bodyVars, funVars, inFunction);
     printf("JUMP ower2%%%d# jump ower else\n", tree->id);
     printf("LABEL ower1%%%d # else\n", tree->id);
-    generate(tree->right, frame);
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("LABEL ower2%%%d\n", tree->id);
 }
 
-void Gwhile(AST* tree, char* frame) {
+void Gwhile(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
     printf("#-----------while---------------\n");
     printf("LABEL start%%%%%d #while\n", tree->id);
-    generate(tree->left, frame);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertToBool\n");
     printf("PUSHs bool@true\n");
     printf("JUMPIFNEQS ower%%%d #-----------body\n", tree->id);
-    generate(tree->middle, frame);
+    generate(tree->middle, frame, bodyVars, funVars, inFunction);
     printf("JUMP start%%%%%d #-----------bodyower\n", tree->id);
     printf("LABEL ower%%%d\n", tree->id);
     printf("#-----------while---------------end\n");
 }
 
-void Gwrite(AST* tree, char* frame) {
+void Gwrite(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
 
     int argCounter = 0;
     AST* ast_tmp = tree->left;
     while (ast_tmp != NULL) {
-        argCounter++;
-        generate(ast_tmp->left, frame);
+        if (ast_tmp->left != NULL && ast_tmp->left->nodeT != n_undefined) {
+            argCounter++;
+            generate(ast_tmp->left, frame, bodyVars, funVars, inFunction);
+        }
         ast_tmp = ast_tmp->right;
     }
     printf("pushs int@%d\n", argCounter);
@@ -1074,7 +1080,7 @@ void Gconstant(AST* tree) {
             printf("PUSHS int@%d\n", tree->valueInt);
             break;
         case void_type:
-            printf("PUSHS nill@nill\n");
+            printf("PUSHS nil@nil\n");
             break;
         default:
             break;
@@ -1087,36 +1093,36 @@ void Gvarriable(AST* tree, char* frame) {
     printf("PUSHS %s@%s\n", frame, tree->name->chars);
 }
 
-void GoAdd(AST* tree, char* frame) {
-    generate(tree->right, frame);
-    generate(tree->left, frame);
+void GoAdd(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertOperation\n");
     printf("ADDS\n");
 }
 
-void GoMull(AST* tree, char* frame) {
-    generate(tree->right, frame);
-    generate(tree->left, frame);
+void GoMull(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertOperation\n");
     printf("MULS\n");
 }
 
-void GoSubb(AST* tree, char* frame) {
-    generate(tree->right, frame);
-    generate(tree->left, frame);
+void GoSubb(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertOperation\n");
     printf("SUBS\n");
 }
 
-void GoDiv(AST* tree, char* frame) {
-    generate(tree->left, frame);
+void GoDiv(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertToFloat\n");
-    generate(tree->right, frame);
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("call %%%%%%convertToFloat\n");
     printf("DIVS\n");
 }
 
-void Gfun(AST* tree, char* frame) {
+void Gfun(AST* tree, char* frame, String* bodyVars, String* funVars) {
 
     printf("##start------------------------------------------------%%%d%s\n", tree->id,
            tree->name->chars);
@@ -1126,15 +1132,15 @@ void Gfun(AST* tree, char* frame) {
     printf("LABEL funDefVarsBack%%%s\n", tree->name->chars);
     printf("createframe\n"
            "pushframe\n");
-    generate(tree->left, frame);
-    generate(tree->right, frame);
+    generate(tree->left, frame, bodyVars, funVars, true);
+    generate(tree->right, frame, bodyVars, funVars, true);
 
     if (tree->varT == void_type) {
         printf("pushs nil@nil\n");
         printf("popframe\n");
         printf("return\n"); // for void functions
     } else {
-        printf("jump %%%%%%err6\n");
+        printf("jump %%%%%%err4\n");
     }
     printf("label funDefVars%%%s\n", tree->name->chars); // define all varriables before using them
 
@@ -1149,11 +1155,10 @@ void Gfun(AST* tree, char* frame) {
     printf("LABEL funOwer%%%d\n", tree->id);
     printf("##end------------------------------------------------%%%d%s\n", tree->id,
            tree->name->chars);
-    inFunction = false;
 }
 
-void Greturn(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void Greturn(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
 
     if (tree->varT == void_type) {
         printf("pushs nil@nil\n");
@@ -1181,21 +1186,21 @@ void Greturn(AST* tree, char* frame) {
     printf("return\n");
 }
 
-void Gcall(AST* tree, char* frame) {
-    generate(tree->left, frame);
+void Gcall(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("CALL fun%%%s\n", tree->name->chars);
 }
 
-void GargLcall(AST* tree, char* frame) {
+void GargLcall(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
     AST* ast_tmp = tree;
     while (ast_tmp != NULL) {
-        generate(ast_tmp->left, frame);
+        generate(ast_tmp->left, frame, bodyVars, funVars, inFunction);
         ast_tmp = ast_tmp->right;
     }
 }
 
-void GargLfun(AST* tree, char* frame) {
-    generate(tree->right, frame);
+void GargLfun(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
+    generate(tree->right, frame, bodyVars, funVars, inFunction);
     printf("DEFVAR %s@%s\n", frame, tree->name->chars);
     switch (tree->varT) {
         case float_type:
@@ -1222,7 +1227,10 @@ void GargLfun(AST* tree, char* frame) {
 }
 
 void startGenerate(AST* tree) {
-    int err; // TODO: check
+    String* bodyVars;
+    String* funVars;
+
+    int err;
     funVars = InitString(&err);
     if (err) {
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
@@ -1232,29 +1240,28 @@ void startGenerate(AST* tree) {
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
     header();
-    generate(tree, "LF");
-    footer();
+    generate(tree, "LF", bodyVars, funVars, false);
+    footer(bodyVars);
     DisposeString(funVars);
 }
 
-void generate(AST* tree, char* frame) {
+void generate(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunction) {
     if (tree == NULL) {
         return;
     }
 
     switch (tree->nodeT) {
         case n_if:
-            Gif(tree, "LF");
+            Gif(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_while:
-            Gwhile(tree, "LF");
+            Gwhile(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_defvar:
-            GdefVar(tree, frame);
+            GdefVar(tree, frame, bodyVars, funVars, inFunction);
             break;
         case n_write:
-            // printf("WRITE %s@%s", frame, tree->name->chars);
-            Gwrite(tree, frame);
+            Gwrite(tree, frame, bodyVars, funVars, inFunction);
             break;
         case n_constant:
             Gconstant(tree);
@@ -1263,47 +1270,71 @@ void generate(AST* tree, char* frame) {
             Gvarriable(tree, "LF");
             break;
         case n_add:
-            GoAdd(tree, "LF");
+            GoAdd(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_mull:
-            GoMull(tree, "LF");
+            GoMull(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_div:
-            GoDiv(tree, "LF");
+            GoDiv(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_sub:
-            GoSubb(tree, "LF");
+            GoSubb(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_stList: {
             AST* ast_tmp = tree;
             while (ast_tmp->right != NULL) {
-                generate(ast_tmp->left, "LF");
+                generate(ast_tmp->left, "LF", bodyVars, funVars, inFunction);
                 ast_tmp = ast_tmp->right;
             }
         } break;
         case n_comp:
-            Gcompare(tree, "LF");
+            Gcompare(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_funCall:
-            Gcall(tree, "LF");
+            Gcall(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_funDef:
-            Gfun(tree, "LF");
+            Gfun(tree, "LF", bodyVars, funVars);
             break;
         case n_return:
-            Greturn(tree, "LF");
+            Greturn(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_asignVar:
-            GasVar(tree, "LF");
+            GasVar(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_argLcall:
-            GargLcall(tree, "LF");
+            GargLcall(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_argLfun:
-            GargLfun(tree, "LF");
+            GargLfun(tree, "LF", bodyVars, funVars, inFunction);
             break;
         case n_read:
             Gread(tree);
+            break;
+        case n_ord:
+            Gord(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_chr:
+            Gchr(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_stringval:
+            Gstringval(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_intval:
+            Gintval(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_floatval:
+            Gfloatval(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_strlen:
+            Gstrlen(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_substring:
+            Gsubstr(tree, "LF", bodyVars, funVars, inFunction);
+            break;
+        case n_concat:
+            Gconcat(tree, "LF", bodyVars, funVars, inFunction);
             break;
 
         default:
