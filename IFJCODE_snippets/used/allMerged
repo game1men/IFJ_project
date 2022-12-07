@@ -19,6 +19,7 @@ label %%%err8
 exit int@8
 label %%%owerErrorHandler
 
+defvar GF@%%read
 defvar GF@%%%tmp1
 defvar GF@%%%tmp2
 defvar GF@%%%tmp3
@@ -432,6 +433,7 @@ defvar LF@%%%var1
     jump false%%%convertToBool
 
     label string%%%convertToBool
+     jumpifeq false%%%convertToBool LF@%%%var1 string@0
      jumpifeq false%%%convertToBool LF@%%%var1 string@
   pushs bool@true
     jump ret%%%convertToBool
@@ -493,14 +495,14 @@ pushframe
     JUMPIFEQ NEQ%%%strcmp   LF@%%%comp  string@NEQ
 
     label LT%%%strcmp
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          LTS
     jump ret%%%strcmp
 
     label GT%%%strcmp
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          GTS
     jump ret%%%strcmp
 
@@ -526,21 +528,21 @@ pushframe
     jump ret%%%strcmp
 
     label LEQ%%%strcmp
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          LTS
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          EQS
          ORS
     jump ret%%%strcmp
 
     label GEQ%%%strcmp
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          GTS
-         pushs LF@%%%var1
          pushs LF@%%%var2
+         pushs LF@%%%var1
          EQS
          ORS
     jump ret%%%strcmp
@@ -579,8 +581,10 @@ pushframe
     type    LF@%%%var2type   LF@%%%var2
 
     #if any var is string go to string compare
-    JUMPIFNEQ ower1%%%compare    LF@%%%var1type  string@string
-    JUMPIFNEQ ower1%%%compare    LF@%%%var2type  string@string
+    JUMPIFEQ c%%%compare    LF@%%%var1type  string@string
+    JUMPIFEQ c%%%compare    LF@%%%var2type  string@string
+    jump  ower1%%%compare
+    label c%%%compare
     pushs LF@%%%comp
     pushs LF@%%%var1
     pushs LF@%%%var2
@@ -619,8 +623,8 @@ pushframe
         pushs LF@%%%var1
         pushs LF@%%%var2
         EQS
-        pushs LF@%%%var2type
         pushs LF@%%%var1type
+        pushs LF@%%%var2type
         EQS
         ANDS
     jump ret%%%compare
