@@ -462,22 +462,10 @@ T_token* getToken() {
                 }
                 break;
 
-            // case /
+            // (case \)
             case STATE_BACKSLASH:
-                // Keep loading backslash
-                if (c == '\\') {
-                    AppendChar(token->val, c);
-                    state = STATE_BACKSLASH;
-                }
-                // Found $ with backslash
-                else if (c == '$' || c == '"') {
-                    AppendChar(token->val, c);
-                    state = STATE_STRING;
-                }
-                else {
-                    ungetc(c, stdin);
-                    state = STATE_STRING;
-                }
+                AppendChar(token->val, c);
+                state = STATE_STRING;
                 break;
 
             // case $ without backslash but need to read the rest of the string so it wont break into another tokens
