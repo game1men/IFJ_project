@@ -247,8 +247,6 @@ void header() {
            "    LT LF@%%%%condition LF@%%%%%%to LF@%%%%%%from\n"
            "    JUMPIFEQ retNull%%%%%%substr LF@%%%%condition bool@true\n"
            "    GT LF@%%%%condition LF@%%%%%%to LF@%%%%%%strLen\n"
-           "    EQ LF@%%%%condition2 LF@%%%%%%to LF@%%%%%%strLen\n"
-           "    OR LF@%%%%condition LF@%%%%condition LF@%%%%condition2\n"
            "    JUMPIFEQ retNull%%%%%%substr LF@%%%%condition bool@true\n"
            "    GT LF@%%%%condition LF@%%%%%%from LF@%%%%%%strLen\n"
            "    JUMPIFEQ retNull%%%%%%substr LF@%%%%condition bool@true\n"
@@ -950,8 +948,10 @@ void Gord(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunc
     generate(tree->left, frame, bodyVars, funVars, inFunction);
     printf("pushs string@string\n");
     printf("pushs int@4\n");
-    printf("call %%%%%%typeCheck\n");
+    printf("call %%%%%%typeCheckIgnoreNil\n");
     printf("pops GF@%%%%%%strlenvar\n");
+    printf("type GF@%%%%%%tmp4 GF@%%%%%%strlenvar\n", tree->id);
+    printf("jumpifeq owerord%%%%%%%d GF@%%%%%%tmp4 string@nil\n", tree->id);
     printf("jumpifeq owerord%%%%%%%d GF@%%%%%%strlenvar string@\n", tree->id);
     printf("STRI2INT GF@%%%%%%strlen GF@%%%%%%strlenvar int@0\n");
     printf("pushs GF@%%%%%%strlen\n");
