@@ -32,6 +32,12 @@ AST* BODY(T_token*, Stack*, T_BTnode*);
 
 AST* BODYCASE(T_token*, Stack*, T_BTnode*);
 
+T_BTnode* PrepareFuntable();
+
+T_funParam* SetupFunParams(nodeType, variableType, int);
+
+String* CreateFunName(char*);
+
 int parseEpilog(T_token*);
 
 void freeStack();

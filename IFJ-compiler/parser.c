@@ -19,6 +19,46 @@ AST* PROLOG() {
     return tree;
 }
 
+T_BTnode* PrepareFuntable() {
+    T_BTnode* funs;
+    BTinit(&funs);
+
+    BTinsert(&funs, CreateFunName("write"), SetupFunParams(n_write, void_type, -1));
+    BTinsert(&funs, CreateFunName("floatval"), SetupFunParams(n_floatval, float_type, 1));
+    BTinsert(&funs, CreateFunName("intval"), SetupFunParams(n_intval, int_type, 1));
+    BTinsert(&funs, CreateFunName("strval"), SetupFunParams(n_stringval, string_type, 1));
+    BTinsert(&funs, CreateFunName("strlen"), SetupFunParams(n_strlen, int_type, 1));
+    BTinsert(&funs, CreateFunName("substring"), SetupFunParams(n_substring, string_type, 3));
+    BTinsert(&funs, CreateFunName("ord"), SetupFunParams(n_ord, int_type, 1));
+    BTinsert(&funs, CreateFunName("chr"), SetupFunParams(n_chr, string_type, 1));
+    BTinsert(&funs, CreateFunName("reads"), SetupFunParams(n_read, string_type, 1));
+    BTinsert(&funs, CreateFunName("readi"), SetupFunParams(n_read, int_type, 1));
+    BTinsert(&funs, CreateFunName("readf"), SetupFunParams(n_read, float_type, 1));
+
+    return funs;
+}
+
+String* CreateFunName(char* name) {
+    int er = OK;
+    String* str = InitString(&er);
+    if (er != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+
+    er = AppendCharacters(str, name);
+    if (er != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+
+    return str;
+}
+
+T_funParam* SetupFunParams(nodeType type, variableType vartype, int argCount) {
+    T_funParam* funInfo = (T_funParam*)malloc(sizeof(T_funParam));
+    funInfo->retType = vartype;
+    funInfo->funType = type;
+    funInfo->waDefined = true;
+    funInfo->wasCalled = false;
+    funInfo->argCount = argCount;
+    return funInfo;
+}
+
 AST* PROGRAM() {
     AST* tree = ASTInit();
 
@@ -29,8 +69,7 @@ AST* PROGRAM() {
     T_BTnode* sym;
     BTinit(&sym);
 
-    T_BTnode* funtable;
-    BTinit(&funtable);
+    T_BTnode* funtable = PrepareFuntable();
 
     Stack s;
     Stack* stack = &s;
