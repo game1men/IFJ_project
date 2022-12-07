@@ -17,6 +17,8 @@ typedef struct funParam {
     int argCount;
     variableType retType;
     nodeType funType;
+    bool wasCalled;
+    bool waDefined;
 }T_funParam;
 
 AST* PROLOG();
