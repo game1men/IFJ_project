@@ -1,17 +1,20 @@
-/*****************************************************************//**
+/*******************************************************************
  * \file   parser.h
- * \brief  
- * 
+ * \brief
+ *
  * \author Matej Smida xsmida06
  * \date   December 2022
  *********************************************************************/
 
-#include "utils.h"
-#include "scanner.h"
-#include "symtable.h"
-#include "stack.h"
+#ifndef PARSER_H
+#define PARSER_H
+
 #include "atree.h"
+#include "scanner.h"
+#include "stack.h"
 #include "stree.h"
+#include "symtable.h"
+#include "utils.h"
 
 typedef struct funParam {
     int argCount;
@@ -19,7 +22,7 @@ typedef struct funParam {
     nodeType funType;
     bool wasCalled;
     bool waDefined;
-}T_funParam;
+} T_funParam;
 
 AST* PROLOG();
 
@@ -27,19 +30,7 @@ AST* PROGRAM();
 
 AST* BODY(T_token*, Stack*, T_BTnode*);
 
-AST* parseFunction(T_token*, Stack*, T_BTnode*);
-
-AST* parseIf(T_token*, Stack*, T_BTnode*);
-
-AST* parseWhile(T_token*, Stack*, T_BTnode*);
-
-AST* parseFunCall(T_token*, Stack*, T_BTnode*);
-
-AST* parsFuncParams(T_token*, Stack*);
-
-AST* sendToAtree(T_token*, T_token**, Stack*);
-
-AST* parseVAR(T_token*, T_token**, Stack*, T_BTnode*);
+AST* BODYCASE(T_token*, Stack*, T_BTnode*);
 
 int parseEpilog(T_token*);
 
@@ -50,3 +41,5 @@ void freeList();
 void freeBtree();
 
 void freeAll(AST*, T_token*, Stack*);
+
+#endif
