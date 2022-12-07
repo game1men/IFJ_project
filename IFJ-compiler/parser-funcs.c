@@ -5,7 +5,8 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     token = getToken();
 
     if (token->type != ID) {
-        exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+
+        exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
 
     // parameters of function
@@ -23,11 +24,11 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
-        //check if funtions has been declared
+        // check if funtions has been declared
         if (params->waDefined == true) {
             exit(WriteErrorMessage(SEMANTIC_ERROR_FUNCTION_UNDEFINED_OR_REDEFINED));
         }
-        //need to check count of params later
+        // need to check count of params later
         paramCount = params->argCount;
         wasCalled = true;
     }
@@ -56,11 +57,10 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
         if (paramCount != count) {
             exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
         }
-    } 
-    else {
+    } else {
         params->argCount = count;
     }
-    
+
     // check for :
     token = getToken();
 
@@ -100,7 +100,7 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     if (token->type != LEFT_CUR_BRACK) {
         exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
     }
-    
+
     // FUN BODY
     token = getToken();
     tree->right = BODY(token, symtable, funtable);
@@ -121,7 +121,7 @@ AST* parsFuncParams(T_token* token, Stack* symtable, int* count) {
     }
 
     // Case ()
-    if (token->type == RIGHT_PAR && count == 0) return tree;
+    if (token->type == RIGHT_PAR && *count == 0) return tree;
 
     if (token->type != KEYWORD) {
         exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
@@ -158,7 +158,7 @@ AST* parsFuncParams(T_token* token, Stack* symtable, int* count) {
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
     tree->name = token->val;
-    //successfully loaded one parameter => increase count
+    // successfully loaded one parameter => increase count
     count++;
 
     // check for , or )

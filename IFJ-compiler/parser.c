@@ -31,9 +31,9 @@ T_BTnode* PrepareFuntable() {
     BTinsert(&funs, CreateFunName("substring"), SetupFunParams(n_substring, string_type, 3));
     BTinsert(&funs, CreateFunName("ord"), SetupFunParams(n_ord, int_type, 1));
     BTinsert(&funs, CreateFunName("chr"), SetupFunParams(n_chr, string_type, 1));
-    BTinsert(&funs, CreateFunName("reads"), SetupFunParams(n_read, string_type, 1));
-    BTinsert(&funs, CreateFunName("readi"), SetupFunParams(n_read, int_type, 1));
-    BTinsert(&funs, CreateFunName("readf"), SetupFunParams(n_read, float_type, 1));
+    BTinsert(&funs, CreateFunName("reads"), SetupFunParams(n_read, string_type, 0));
+    BTinsert(&funs, CreateFunName("readi"), SetupFunParams(n_read, int_type, 0));
+    BTinsert(&funs, CreateFunName("readf"), SetupFunParams(n_read, float_type, 0));
 
     return funs;
 }
@@ -192,11 +192,11 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
             tree = parseVAR(token, &lastToken, symtable, funtable);
 
-            if (lastToken->type != SEMICOLON) {
+            // if (lastToken->type != SEMICOLON) {
 
-                tokenDtor(lastToken);
-                exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
-            }
+            //     tokenDtor(lastToken);
+            //     exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+            // }
 
             break;
         }
