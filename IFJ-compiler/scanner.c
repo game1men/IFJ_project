@@ -470,7 +470,7 @@ T_token* getToken() {
                     state = STATE_BACKSLASH;
                 }
                 // Found $ with backslash
-                else if (c == '$') {
+                else if (c == '$' || c == '"') {
                     AppendChar(token->val, c);
                     state = STATE_STRING;
                 }
