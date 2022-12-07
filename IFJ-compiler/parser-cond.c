@@ -3,7 +3,7 @@
 AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable) {
     AST* ifRoot = ASTInit();
     ifRoot->nodeT = n_if;
-    int ex = OK;
+    //int ex = OK;
 
     // if() { BODY }
     parseCondConstruct(ifRoot, token, symtable, funtable);
@@ -27,16 +27,16 @@ AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable) {
     BTinit(&scope);
 
     // push new scope
-    ex = Push(symtable, &scope);
-    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    //ex = Push(symtable, &scope);
+    //if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 
     // BODY
-    token = getToken();
+    //token = getToken();
     ifRoot->right = BODY(token, symtable, funtable);
 
     // pop scope
-    BTdispose(Pop(symtable, &ex), NULL);
-    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    //BTdispose(Pop(symtable, &ex), NULL);
+    //if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 
     return ifRoot;
 }
@@ -61,7 +61,7 @@ void parseCondConstruct(AST* root, T_token* token, Stack* symtable, T_BTnode* fu
     }
 
     // Empty expression
-    if (expressionTree->nodeT != n_undefined) {
+    if (expressionTree->nodeT == n_undefined) {
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
 
@@ -73,19 +73,19 @@ void parseCondConstruct(AST* root, T_token* token, Stack* symtable, T_BTnode* fu
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
     // BODY
-    token = getToken();
+    //token = getToken();
 
-    T_BTnode* scope;
-    BTinit(&scope);
+    //T_BTnode* scope;
+    //BTinit(&scope);
     // push new scope
-    ex = Push(symtable, &scope);
+    //ex = Push(symtable, &scope);
     if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 
     root->middle = BODY(token, symtable, funtable);
 
     // pop scope
-    BTdispose(Pop(symtable, &ex), NULL);
-    if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+    //BTdispose(Pop(symtable, &ex), NULL);
+    //if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 }
 
 AST* parseWhile(T_token* token, Stack* symtable, T_BTnode* funtable) {

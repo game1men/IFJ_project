@@ -2,6 +2,7 @@
 #include "generator.h"
 
 int main() {
-    startGenerate(PROLOG());
+    AST* tree = PROLOG();
+    startGenerate(tree);
     return 0;
 }
