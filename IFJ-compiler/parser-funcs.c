@@ -141,9 +141,10 @@ AST* parseFunCall(T_token* token, Stack* symtable, T_BTnode* funtable) {
     AST* funRoot = ASTInit();
     funRoot->name = token->val;
     if (funInfo->funType == n_funDef) {
-        funRoot->varT = n_funCall;
+        funRoot->nodeT = n_funCall;
     } else {
-        funRoot->varT = funInfo->funType;
+        funRoot->nodeT = funInfo->funType;
+        funRoot->varT = funInfo->retType;
     }
 
     // check (
