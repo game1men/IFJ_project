@@ -75,8 +75,6 @@ pushframe
     LT LF@%%condition LF@%%%to LF@%%%from
     JUMPIFEQ retNull%%%substr LF@%%condition bool@true
     GT LF@%%condition LF@%%%to LF@%%%strLen
-    EQ LF@%%condition2 LF@%%%to LF@%%%strLen
-    OR LF@%%condition LF@%%condition LF@%%condition2
     JUMPIFEQ retNull%%%substr LF@%%condition bool@true
     GT LF@%%condition LF@%%%from LF@%%%strLen
     JUMPIFEQ retNull%%%substr LF@%%condition bool@true
