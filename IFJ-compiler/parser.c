@@ -160,13 +160,20 @@ AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
 AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
+    AST* tree = ASTInit();
+    if (tree == NULL) {
+        tokenDtor(token);
+        DisposeStack(symtable, freeStack);
+        BTdispose(funtable, freeBtree);
+    }
+
     switch (token->type) {
         case KEYWORD:
             if (strcmp(token->val->chars, "if") == 0) {
-                return parseIf(token, symtable, funtable);
+                tree = parseIf(token, symtable, funtable);
                 break;
             } else if (strcmp(token->val->chars, "while") == 0) {
-                return parseWhile(token, symtable, funtable);
+                tree = parseWhile(token, symtable, funtable);
                 break;
             } else {
 
@@ -181,7 +188,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return parseVAR(token, &lastToken, symtable, funtable);
+            tree = parseVAR(token, &lastToken, symtable, funtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -192,7 +199,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
         }
 
         case ID:
-            return parseFunCall(token, symtable, funtable);
+            tree = parseFunCall(token, symtable, funtable);
             break;
 
         case INT: {
@@ -202,7 +209,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return sendToAtree(token, &lastToken, symtable);
+            tree = sendToAtree(token, &lastToken, symtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -219,7 +226,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return sendToAtree(token, &lastToken, symtable);
+            tree = sendToAtree(token, &lastToken, symtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -236,7 +243,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return sendToAtree(token, &lastToken, symtable);
+            tree = sendToAtree(token, &lastToken, symtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -253,7 +260,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return sendToAtree(token, &lastToken, symtable);
+            tree = sendToAtree(token, &lastToken, symtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -275,7 +282,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
             }
 
-            return sendToAtree(token, &lastToken, symtable);
+            tree = sendToAtree(token, &lastToken, symtable);
 
             if (lastToken->type != SEMICOLON) {
 
@@ -285,6 +292,8 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
             break;
         }
     }
+
+    return tree;
 }
 
 int parseEpilog(T_token* token) {
