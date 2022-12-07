@@ -5,22 +5,35 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     token = getToken();
 
     if (token->type != ID) {
-        tokenDtor(token);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
     }
 
-    // check if fun name exists in symtable F
-    if (IsInScope(token->val, symtable)) {
-        tokenDtor(token);
-        DisposeStack(symtable, freeStack);
-        exit(WriteErrorMessage(SEMANTIC_ERROR_FUNCTION_UNDEFINED_OR_REDEFINED));
+    // parameters of function
+    T_funParam* params = malloc(sizeof(T_funParam));
+
+    bool wasCalled = false;
+    int paramCount;
+    int err;
+    T_token* funName = token;
+    // check if function has been called but not declared
+    if (BTsearch(funtable, token->val)) {
+        params = BTgetData(funtable, token->val, &err);
+
+        if (err != OK) {
+            exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
+        }
+
+        //check if funtions has been declared
+        if (params->waDefined == true) {
+            exit(WriteErrorMessage(SEMANTIC_ERROR_FUNCTION_UNDEFINED_OR_REDEFINED));
+        }
+        //need to check count of params later
+        paramCount = params->argCount;
+        wasCalled = true;
     }
 
     AST* tree = ASTInit();
     if (tree == NULL) {
-        tokenDtor(token);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
 
@@ -31,41 +44,86 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     token = getToken();
 
     if (token->type != LEFT_PAR) {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
     }
 
     // parse params
-    tree->left = parsFuncParams(token, symtable);
+    int count = 0;
+    tree->left = parsFuncParams(token, symtable, &count);
 
+    // invalid character count
+    if (wasCalled) {
+        if (paramCount != count) {
+            exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+        }
+    } 
+    else {
+        params->argCount = count;
+    }
+    
     // check for :
-    // check for ret type
-    // set ret type
-    // check for {
-    // FUN BODY
-    // check for return
-    // set return type
-    // do till }
+    token = getToken();
 
+    if (token->type != COLON) {
+        exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+    }
+
+    // check for ret type
+    token = getToken();
+
+    if (token->type != KEYWORD) {
+        exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+    }
+    if (strcmp(token->val->chars, "int") == 0) {
+        tree->varT = int_type;
+        params->retType = int_type;
+        params->funType = n_funDef;
+    } else if (strcmp(token->val->chars, "float") == 0) {
+        tree->varT = float_type;
+        params->retType = float_type;
+        params->funType = n_funDef;
+    } else if (strcmp(token->val->chars, "string") == 0) {
+        tree->varT = string_type;
+        params->retType = string_type;
+        params->funType = n_funDef;
+    } else if (strcmp(token->val->chars, "void") == 0) {
+        tree->varT = void_type;
+        params->retType = void_type;
+        params->funType = n_funDef;
+    } else {
+        exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+    }
+
+    // check for {
+    token = getToken();
+
+    if (token->type != LEFT_CUR_BRACK) {
+        exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
+    }
+    
+    // FUN BODY
+    token = getToken();
+    tree->right = BODY(token, symtable, funtable);
+
+    params->waDefined = true;
+
+    BTinsert(&funtable, funName->val, params);
     return tree;
 }
 
-AST* parsFuncParams(T_token* token, Stack* symtable) {
+AST* parsFuncParams(T_token* token, Stack* symtable, int* count) {
     // check for keyword
     token = getToken();
 
     AST* tree = ASTInit();
     if (tree == NULL) {
-        tokenDtor(token);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
 
     // Case ()
-    if (token->type == RIGHT_PAR) return tree;
+    if (token->type == RIGHT_PAR && count == 0) return tree;
 
     if (token->type != KEYWORD) {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
     }
 
@@ -76,45 +134,41 @@ AST* parsFuncParams(T_token* token, Stack* symtable) {
     } else if (strcmp(token->val->chars, "string") == 0) {
         tree->varT = string_type;
     } else {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
 
     token = getToken();
 
     if (token->type != VAR) {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
 
     if (!IsInScope(token->val, symtable)) {
-        // TODO fix symtable and token->type
         int e;
         T_BTnode* sym = Pop(symtable, &e);
         if (sym == NULL) {
-            freeAll(tree, token, symtable);
+            exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
         int err = BTinsert(&sym, token->val, NULL);
         if (err != OK) {
-            freeAll(tree, token, symtable);
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
     } else {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
     tree->name = token->val;
+    //successfully loaded one parameter => increase count
+    count++;
 
     // check for , or )
     token = getToken();
 
     if (token->type == COMMA) {
-        tree->right = parsFuncParams(token, symtable);
+        tree->right = parsFuncParams(token, symtable, count);
     } else if (token->type == RIGHT_PAR) {
         return tree;
     } else {
-        freeAll(tree, token, symtable);
         exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
     }
     return tree;
