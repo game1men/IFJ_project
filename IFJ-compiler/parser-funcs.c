@@ -113,7 +113,7 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     return tree;
 }
 
-AST* parseRet(T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
+AST* parseRet(Stack* symtable, T_BTnode* funtable, variableType returnType) {
     AST* tree = ASTInit();
 
     tree->varT = returnType;
@@ -299,8 +299,10 @@ AST* parseCallParams(Stack* symtable, List* buffer, bool firstCall, T_funParam* 
 
         // arg is empty or is conditional expression
         // would result in fun(,) as fun() is already handled
-        if ((argVal->nodeT == n_undefined || argVal->nodeT == n_comp) && funInfo->argCount != -1) {
-            exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
+        if ((argVal->nodeT == n_undefined || argVal->nodeT == n_comp)) {
+            if(funInfo->argCount != -1 || count != 0) {
+                exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
+            }
         }
 
         count++;
