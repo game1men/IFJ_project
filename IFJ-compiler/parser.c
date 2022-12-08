@@ -178,7 +178,7 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable, variableType 
                 tree = parseWhile(token, symtable, funtable, returnType);
                 break;
             } else if(strcmp(token->val->chars, "return") == 0) {
-                tree = parseRet(token, symtable, funtable, returnType);
+                tree = parseRet(symtable, funtable, returnType);
             } else {
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
