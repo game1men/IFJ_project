@@ -116,7 +116,7 @@ AST* PROGRAM() {
                 exit(WriteErrorMessage(err));
             }
         } else {
-            tree->left = BODYCASE(token, stack, funtable);
+            tree->left = BODYCASE(token, stack, funtable, undefined_type);
         }
 
         token = getToken();
@@ -130,7 +130,7 @@ AST* PROGRAM() {
     return root;
 }
 
-AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable) {
+AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
 
     AST* tree = ASTInit();
     if (tree == NULL) {
@@ -150,7 +150,7 @@ AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable) {
     while (token->type != TOKEN_EOF) {
 
         token = getToken();
-        tree->left = BODYCASE(token, symtable, funtable);
+        tree->left = BODYCASE(token, symtable, funtable, returnType);
             if(tree->left == NULL) break;
         tree->right = ASTInit();
         tree = tree->right;
@@ -160,7 +160,7 @@ AST* BODY(T_token* token, Stack* symtable, T_BTnode* funtable) {
     return root;
 }
 
-AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
+AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
 
     AST* tree = ASTInit();
     if (tree == NULL) {
@@ -172,13 +172,14 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
     switch (token->type) {
         case KEYWORD:
             if (strcmp(token->val->chars, "if") == 0) {
-                tree = parseIf(token, symtable, funtable);
+                tree = parseIf(token, symtable, funtable, returnType);
                 break;
             } else if (strcmp(token->val->chars, "while") == 0) {
-                tree = parseWhile(token, symtable, funtable);
+                tree = parseWhile(token, symtable, funtable, returnType);
                 break;
+            } else if(strcmp(token->val->chars, "return") == 0) {
+                tree = parseRet(token, symtable, funtable, returnType);
             } else {
-
                 exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
             }
             break;
@@ -192,11 +193,6 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
             tree = parseVAR(token, &lastToken, symtable, funtable);
 
-            // if (lastToken->type != SEMICOLON) {
-
-            //     tokenDtor(lastToken);
-            //     exit(WriteErrorMessage(LEXICAL_ANALYSIS_ERROR));
-            // }
 
             break;
         }
@@ -221,6 +217,8 @@ AST* BODYCASE(T_token* token, Stack* symtable, T_BTnode* funtable) {
             }
             break;
         }
+
+        
 
         case FLOAT: {
             T_token* lastToken = tokenInit();

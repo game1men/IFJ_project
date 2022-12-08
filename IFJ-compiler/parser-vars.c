@@ -9,11 +9,7 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
     if (token->type == ASSIGN) {
 
         AST* varTree = ASTInit();
-        if (varTree == NULL) {
-            tokenDtor(token);
-            tokenDtor(*lastToken);
-            DisposeStack(symtable, freeStack);
-        }
+
 
         // if (BTsearch(Top(symtable, erre), prevToken->val)) {
         if (IsInScope(prevToken->val, symtable)) {
@@ -31,15 +27,11 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
 
         List* tokenList = malloc(sizeof(List));
         if (tokenList == NULL) {
-            freeAll(varTree, token, symtable);
-            tokenDtor(*lastToken);
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
         int err = InitList(tokenList);
         if (err != OK) {
-            freeAll(varTree, token, symtable);
-            tokenDtor(*lastToken);
             exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
         }
 
@@ -68,7 +60,8 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
             er = 1;
         else if (tree->nodeT == n_comp)
             er = 1;
-
+        else if (tree->nodeT == n_undefined)
+            er = 1;
         if (er == 1) {
             tree = GetArithmeticTree(tokenList, lastToken, symtable);
 
@@ -78,8 +71,9 @@ AST* parseVAR(T_token* token, T_token** lastToken, Stack* symtable, T_BTnode* fu
                 e = 1;
             else if (tree->nodeT == n_comp)
                 e = 1;
+            else if (tree->nodeT == n_undefined)
+                e = 1;
             if (e == 1) {
-                
                 exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
             }
         }
@@ -147,17 +141,11 @@ AST* sendToAtree(T_token* token, T_token** lastToken, Stack* symtable) {
 
     List* tokenList = malloc(sizeof(List));
     if (tokenList == NULL) {
-        tokenDtor(token);
-        tokenDtor(*lastToken);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
 
     int err = InitList(tokenList);
     if (err != OK) {
-        tokenDtor(token);
-        tokenDtor(*lastToken);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
 
@@ -165,10 +153,6 @@ AST* sendToAtree(T_token* token, T_token** lastToken, Stack* symtable) {
 
     AST* tree = ASTInit();
     if (tree == NULL) {
-        tokenDtor(token);
-        tokenDtor(*lastToken);
-        DisposeList(tokenList, freeList);
-        DisposeStack(symtable, freeStack);
         exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     }
 
@@ -194,10 +178,6 @@ AST* sendToAtree(T_token* token, T_token** lastToken, Stack* symtable) {
         else if (tree->nodeT == n_comp)
             e = 1;
         if (e == 1) {
-            tokenDtor(token);
-            tokenDtor(*lastToken);
-            DisposeList(tokenList, freeList);
-            DisposeStack(symtable, freeStack);
             exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
         }
     }

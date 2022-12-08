@@ -28,9 +28,9 @@ AST* PROLOG();
 
 AST* PROGRAM();
 
-AST* BODY(T_token*, Stack*, T_BTnode*);
+AST* BODY(T_token*, Stack*, T_BTnode*, variableType);
 
-AST* BODYCASE(T_token*, Stack*, T_BTnode*);
+AST* BODYCASE(T_token*, Stack*, T_BTnode*, variableType);
 
 T_BTnode* PrepareFuntable();
 

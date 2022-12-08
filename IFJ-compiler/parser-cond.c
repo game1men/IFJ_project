@@ -1,12 +1,12 @@
 #include "parser-cond.h"
 
-AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable) {
+AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
     AST* ifRoot = ASTInit();
     ifRoot->nodeT = n_if;
     //int ex = OK;
 
     // if() { BODY }
-    parseCondConstruct(ifRoot, token, symtable, funtable);
+    parseCondConstruct(ifRoot, token, symtable, funtable, returnType);
 
     // else
     token = getToken();
@@ -32,7 +32,7 @@ AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable) {
 
     // BODY
     //token = getToken();
-    ifRoot->right = BODY(token, symtable, funtable);
+    ifRoot->right = BODY(token, symtable, funtable, returnType);
 
     // pop scope
     //BTdispose(Pop(symtable, &ex), NULL);
@@ -41,7 +41,7 @@ AST* parseIf(T_token* token, Stack* symtable, T_BTnode* funtable) {
     return ifRoot;
 }
 
-void parseCondConstruct(AST* root, T_token* token, Stack* symtable, T_BTnode* funtable) {
+void parseCondConstruct(AST* root, T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
     token = getToken();
     // (
     if (token->type != LEFT_PAR) exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
@@ -81,19 +81,19 @@ void parseCondConstruct(AST* root, T_token* token, Stack* symtable, T_BTnode* fu
     //ex = Push(symtable, &scope);
     if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 
-    root->middle = BODY(token, symtable, funtable);
+    root->middle = BODY(token, symtable, funtable, returnType);
 
     // pop scope
     //BTdispose(Pop(symtable, &ex), NULL);
     //if (ex != OK) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
 }
 
-AST* parseWhile(T_token* token, Stack* symtable, T_BTnode* funtable) {
+AST* parseWhile(T_token* token, Stack* symtable, T_BTnode* funtable, variableType returnType) {
     AST* whileRoot = ASTInit();
     whileRoot->nodeT = n_while;
 
     // while() { BODY }
-    parseCondConstruct(whileRoot, token, symtable, funtable);
+    parseCondConstruct(whileRoot, token, symtable, funtable, returnType);
 
     return whileRoot;
 }
