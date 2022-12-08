@@ -950,7 +950,7 @@ void Gord(AST* tree, char* frame, String* bodyVars, String* funVars, bool inFunc
     printf("pushs int@4\n");
     printf("call %%%%%%typeCheckIgnoreNil\n");
     printf("pops GF@%%%%%%strlenvar\n");
-    printf("type GF@%%%%%%tmp4 GF@%%%%%%strlenvar\n", tree->id);
+    printf("type GF@%%%%%%tmp4 GF@%%%%%%strlenvar\n");
     printf("jumpifeq owerord%%%%%%%d GF@%%%%%%tmp4 string@nil\n", tree->id);
     printf("jumpifeq owerord%%%%%%%d GF@%%%%%%strlenvar string@\n", tree->id);
     printf("STRI2INT GF@%%%%%%strlen GF@%%%%%%strlenvar int@0\n");
