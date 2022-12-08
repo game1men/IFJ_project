@@ -109,7 +109,7 @@ AST* parseFunction(T_token* token, Stack* symtable, T_BTnode* funtable) {
     // token = getToken();
     tree->right = BODY(token, symtable, funtable, params->retType);
 
-    
+
     return tree;
 }
 
@@ -135,10 +135,11 @@ AST* parseRet(T_token* token, Stack* symtable, T_BTnode* funtable, variableType 
         tree->right = parseFunCall(lastToken, symtable, funtable);
         return tree;
     }
-
+    tree->right = expressionTree;
     if (lastToken->type != SEMICOLON) exit(WriteErrorMessage(SYNTACTIC_ANALYSIS_ERROR));
 
     if (expressionTree->nodeT == n_comp)
+    exit(WriteErrorMessage(SEMANTIC_ERROR_WRONG_ARGS_OR_RETURN_VALUE));
 
         if (expressionTree->nodeT != n_undefined) tree->right = expressionTree;
 
