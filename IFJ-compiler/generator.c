@@ -1148,7 +1148,6 @@ void Gfun(AST* tree, char* frame, String* bodyVars, String* funVars) {
     printf("jump funDefVarsBack%%%s\n", tree->name->chars);
     DisposeString(funVars);
     int err;
-    if (err) exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
     funVars = InitString(&err);
     printf("jump fun%%%s\n", tree->name->chars);
 
