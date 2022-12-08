@@ -81,7 +81,7 @@ char* _stringConvert(String* s) {
                         break;
                     case 'x': // detect hexa
 
-                        if (x < s->length - 3 &&
+                         if (x < s->length - 3 &&
                             ((s->chars[x + 2] >= 48 && s->chars[x + 2] <= 57) ||
                              (s->chars[x + 2] >= 65 && s->chars[x + 2] <= 70) ||
                              (s->chars[x + 2] >= 97 && s->chars[x + 2] <= 102)) &&
@@ -90,18 +90,19 @@ char* _stringConvert(String* s) {
                              (s->chars[x + 3] >= 97 && s->chars[x + 3] <= 102))) {
                             // convert from hexa to dec
                             int first = 0;
-                            if (s->chars[x + 2] >= 65) {
-                                first = s->chars[x + 2] - 55;
-                            } else if (s->chars[x + 2] >= 97) {
+                            if (s->chars[x + 2] >= 97) {
                                 first = s->chars[x + 2] - 87;
+                            } else if (s->chars[x + 2] >= 65) {
+                                first = s->chars[x + 2] - 55;
                             } else {
                                 first = s->chars[x + 2] - 48;
                             }
                             int second = 0;
-                            if (s->chars[x + 3] >= 65) {
-                                second = s->chars[x + 3] - 55;
-                            } else if (s->chars[x + 3] >= 97) {
+
+                            if (s->chars[x + 3] >= 97) {
                                 second = s->chars[x + 3] - 87;
+                            } else if (s->chars[x + 3] >= 65) {
+                                second = s->chars[x + 3] - 55;
                             } else {
                                 second = s->chars[x + 3] - 48;
                             }
@@ -118,6 +119,8 @@ char* _stringConvert(String* s) {
                                 exit(WriteErrorMessage(INTERNAL_COMPILER_ERROR));
                             x += 3;
                         }
+
+
 
                         break;
                     case '$':
